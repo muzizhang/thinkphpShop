@@ -87,22 +87,66 @@
 字段
     id，权限名称，上级id，path
 
+drop table if exists privilege;
+create table privilege
+(
+    id int unsigned not null auto_increment comment 'ID',
+    pri_name varchar(255) not null comment '权限名称',
+    parent_id int unsigned not null default '0' comment '上级id',
+    path VARCHAR(255) not null default '-' comment 'path路径',
+    primary key (id)
+)engine='InnoDB' comment='权限表';
+
 `角色权限表`
 字段
     权限id，角色id
-
+drop table if exists privilege_role;
+create table privilege_role
+(
+    pri_id int unsigned not null comment '权限id',
+    role_id int unsigned not null comment '角色id',
+    key pri_id(pri_id),
+    key role_id(role_id)
+)engine='InnoDB' comment='权限角色表';
 
 `角色表`
 字段
     id，角色名称
 
-`管理角色表`
+drop table if exists role;
+create table role
+(
+    id int unsigned not null auto_increment comment 'ID',
+    role_name VARCHAR(255) not null comment '角色名称',
+    primary key (id)
+)engine='InnoDB' comment='角色表';
+
+
+`角色管理表`
 字段
     角色id，管理员id
+
+drop table if exists role_admin;
+create table role_admin
+(
+    role_id int unsigned not null comment '角色id',
+    admin_id int unsigned not null comment '管理员id',
+    key role_id(role_id),
+    key admin_id(admin_id)
+)engine='InnoDB' comment='角色管理表';
 
 `管理员表`
 字段
     id，名称，密码
+
+drop table if exists admin;
+create table admin
+(
+    id int unsigned not null auto_increment comment 'ID',
+    name VARCHAR(255) not null comment '名称',
+    password VARCHAR(255) not null comment '密码',
+    primary key (id)
+)engine='InnoDB' comment='管理员表';
 
 `文章表`
 字段

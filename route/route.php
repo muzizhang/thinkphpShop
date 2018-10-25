@@ -36,8 +36,7 @@ Route::controller('homeUser','home/User');
 //  测试
 //  资源路由
 // Route::resource('test','home/test');
-Route::rule('test','home/test/test');
-Route::rule('test/captcha','home/test/captcha');
+
 return [
 
 ];

@@ -11,7 +11,6 @@
 
 // [ 应用入口文件 ]
 namespace think;
-session_start();
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';
 require_once dirname(dirname(__FILE__)) . '/application/home/class.geetestlib.php';
