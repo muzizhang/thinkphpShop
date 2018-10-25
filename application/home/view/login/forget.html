@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+	<title>品优购，找回密码</title>
+	<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+	<!--[if lt IE 9]>
+	<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+	<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<link rel="stylesheet" href="/static/layui/css/layui.css">
+	<script src="/static/layui/layui.all.js"></script>
+	<style>
+		body {
+			font-size: 12px;
+			box-sizing: border-box;
+		}
+		a {
+			color:#999;
+		}
+		input {
+			width:280px;
+			border: 1px solid #ddd;
+			padding: 15px 0 15px 15px;
+		}
+		.tip {
+			color:red;
+			font-size: 14px;
+		}
+		/* 滑动验证 */
+		#embed-captcha {
+            width: 327px;
+            margin-top: 30px;
+        }
+        .show {
+            display: block;
+        }
+        .hide {
+            display: none;
+        }
+        #notice {
+            color: red;
+        }
+	</style>
+</head>
+
+<body>
+	<div class="nav" style="background:#f0f0f0;">
+		<div class="layui-container" style="height:30px;line-height: 30px;">
+			<div class="layui-row">
+					<div class="layui-col-md4">
+						<div class="layui-col-md2">
+							<i class="layui-icon">&#xe68e;</i>
+							<a href="/homeIndex/index">首页</a>
+						</div>
+						<div class="layui-col-md6" style="color:#999;">
+							<i class="layui-icon">&#xe715;</i>
+							北京
+						</div>
+					</div>
+					<div class="layui-col-md8">
+						<div class="layui-col-md4">
+							<div style="visibility:hidden;">品优购</div>
+						</div>
+						<div class="layui-col-md2">
+							<a href="/homeLogin/index">你好，请登录</a>
+							<a href="/homeRegister/index" style="color:red;">免费注册</a>
+						</div>
+						<div class="layui-col-md1">
+							<a href="javaScript:;">我的订单</a>
+						</div>
+						<div class="layui-col-md1">
+							<a href="javaScript:;">我的品优购</a>
+						</div>
+						<div class="layui-col-md1">
+							<a href="javaScript:;">品优购会员</a>
+						</div>
+						<div class="layui-col-md1">
+							<a href="javaScript:;">企业采购</a>
+						</div>
+						<div class="layui-col-md1">
+							<a href="javaScript:;">关注品优购</a>
+						</div>
+						<div class="layui-col-md1">
+							<a href="javaScript:;">网站导航</a>
+						</div>
+					</div>
+				</div>
+		</div>
+	</div>
+	<div class="header" style="box-shadow: 2px 4px 6px #e0e0e0;">
+		<div class="layui-container" style="height:110px;width:1200px;line-height:100px;margin: 0 auto;">
+			<div class="layui-row">
+				<div class="layui-col-md9">
+					<div class="layui-col-md3">
+						<img src="/static/img/logo.png" alt="" style="width:160px;height:50px;margin-top:24px;">
+					</div>
+					<div class="layui-col-md2" style="font-size:24px;height: 34px;line-height: 34px;margin-top: 45px;margin-left:-30px;color:#333;">
+						找回密码
+					</div>
+				</div>
+				<div class="layui-col-md3">
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 内容 -->
+	<div class="container" style="width:310px;margin: 65px auto 0;color:#333;">
+		<form class="popup" action="/homeLogin/VerifyLoginServlet" method="POST">
+			<input type="text" name="phone" placeholder="请输入邮箱/手机号" style="color:#999;height:17px;line-height: 20px;">
+			<div id="embed-captcha"></div>
+			<p id="wait" class="show">正在加载验证码......</p>
+			<p id="notice" class="hide">请先完成验证</p>
+			<span class="tip"></span>
+			<!-- 滑块验证 -->
+			<input class="btn" id="embed-submit" type="submit" value="下一步" style="width:303px;height:50px;margin-top: 30px;background: #c81623;opacity: .5;color: #fff;font-size: 14px;">
+		</form>
+	</div>
+</body>
+
+</html>
+<script src="http://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+<script src="/static/js/gt.js"></script>
+<script>
+	$('input[name=phone]').blur(function(){
+		var phone = $(this).val();
+		if(phone == '')
+			return ;
+		
+		$.ajax({
+			url:'/homeLogin/Phone',
+			type:'post',
+			data:{phone:phone},
+			dataType:'json',
+			success:function(data)
+			{
+				if(data.status == 404)
+					alert('用户不存在');
+			}
+		});
+	});
+	$('#embed-submit').click(function(){
+		var phone = $('input[name=phone]').val();
+		if(phone == '')
+		{
+			alert('请输入手机号/邮箱');
+			return ;
+		}
+	});
+	var handlerEmbed = function (captchaObj) {
+		$("#embed-submit").click(function (e) {
+			var validate = captchaObj.getValidate();
+			if (!validate) {
+				$("#notice")[0].className = "show";
+				setTimeout(function () {
+					$("#notice")[0].className = "hide";
+				}, 2000);
+				e.preventDefault();
+			}
+		});
+		// 将验证码加到id为captcha的元素里，同时会有三个input的值：geetest_challenge, geetest_validate, geetest_seccode
+		captchaObj.appendTo("#embed-captcha");
+		captchaObj.onReady(function () {
+			$("#wait")[0].className = "hide";
+		});
+    };
+    $.ajax({
+        // 获取id，challenge，success（是否启用failback）
+        url: "/homeLogin/StartCaptchaServlet?t=" + (new Date()).getTime(), // 加随机数防止缓存
+        type: "get",
+        dataType: "json",
+        success: function (data) {
+            console.log(data);
+            // 使用initGeetest接口
+            // 参数1：配置参数
+            // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
+            initGeetest({
+                gt: data.gt,
+                challenge: data.challenge,
+                new_captcha: data.new_captcha,
+                product: "embed", // 产品形式，包括：float，embed，popup。注意只对PC版验证码有效
+                offline: !data.success // 表示用户后台检测极验服务器是否宕机，一般不需要关注
+                // 更多配置参数请参见：http://www.geetest.com/install/sections/idx-client-sdk.html#config
+            }, handlerEmbed);
+        }
+    });
+</script>
+<script>
+	;!function(){
+		var layer = layui.layer
+		,form = layui.form
+		,element = layui.element;
+		
+	}();
+</script>

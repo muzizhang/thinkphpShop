@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+	<title>品优购，手机号验证</title>
+	<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+	<!--[if lt IE 9]>
+	<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+	<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<link rel="stylesheet" href="/static/layui/css/layui.css">
+	<script src="/static/layui/layui.all.js"></script>
+	<style>
+		body {
+			font-size: 12px;
+		}
+		a {
+			color:#999;
+		}
+		input {
+			width:327px;
+			border: 1px solid #ddd;
+			padding: 15px 0 15px 15px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="nav" style="background:#f0f0f0;">
+		<div class="layui-container" style="height:30px;line-height: 30px;">
+			<div class="layui-row">
+					<div class="layui-col-md4">
+						<div class="layui-col-md2">
+							<i class="layui-icon">&#xe68e;</i>
+							<a href="/homeIndex/index">首页</a>
+						</div>
+						<div class="layui-col-md6" style="color:#999;">
+							<i class="layui-icon">&#xe715;</i>
+							北京
+						</div>
+					</div>
+					<div class="layui-col-md8">
+						<div class="layui-col-md4">
+							<div style="visibility:hidden;">品优购</div>
+						</div>
+						<div class="layui-col-md2">
+							<a href="/homeLogin/index">你好，请登录</a>
+							<a href="/homeRegister/index" style="color:red;">免费注册</a>
+						</div>
+						<div class="layui-col-md1">
+							<a href="javaScript:;">我的订单</a>
+						</div>
+						<div class="layui-col-md1">
+							<a href="javaScript:;">我的品优购</a>
+						</div>
+						<div class="layui-col-md1">
+							<a href="javaScript:;">品优购会员</a>
+						</div>
+						<div class="layui-col-md1">
+							<a href="javaScript:;">企业采购</a>
+						</div>
+						<div class="layui-col-md1">
+							<a href="javaScript:;">关注品优购</a>
+						</div>
+						<div class="layui-col-md1">
+							<a href="javaScript:;">网站导航</a>
+						</div>
+					</div>
+				</div>
+		</div>
+	</div>
+	<div class="header" style="box-shadow: 2px 4px 6px #e0e0e0;">
+		<div class="layui-container" style="height:110px;width:1200px;line-height:100px;margin: 0 auto;">
+			<div class="layui-row">
+				<div class="layui-col-md9">
+					<div class="layui-col-md3">
+						<img src="/static/img/logo.png" alt="" style="width:160px;height:50px;margin-top:24px;">
+					</div>
+					<div class="layui-col-md2" style="font-size:24px;height: 34px;line-height: 34px;margin-top: 45px;margin-left:-30px;color:#333;">
+						找回密码
+					</div>
+				</div>
+				<div class="layui-col-md3">
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 内容 -->
+	<div class="container" style="width:327px;margin: 65px auto 0;color:#333;">
+		<form action="">
+			<input type="text" name="code" placeholder="请输入验证码" style="width:200px;color:#999;height:17px;line-height: 20px;">
+			<input type="button" id="send" value="发送验证码" style="width:88px;margin-left: 18px;padding:15px 10px;">
+			<!-- 滑块验证 -->
+			<input type="button" id="step" value="下一步" style="width:327px;height:50px;margin-top: 30px;background: #c81623;opacity: .5;color: #fff;font-size: 14px;">
+		</form>
+	</div>
+</body>
+
+</html>
+<script src="/static/js/plugins/jquery/jquery.min.js"></script>
+<script>
+	$('#send').click(function(){
+		var code = $('input[name=code]').val();
+		$.ajax({
+			url:'/homeLogin/getCode?code='+code,
+			type:'get',
+			dataType:'json',
+			success:function(data)
+			{
+				if(data.message == 'ok' && data.code == 'ok')
+				{
+					//   获取当前的value属性
+					var count = 60;
+					set = setInterval(function(){
+						count--;
+						$('#send').val('剩余'+count+'秒');
+						$('#send').attr('disabled','disabled');
+						if(count == 0)
+						{
+							$('#send').val('发送验证码');
+							clearInterval(set);
+							$('#send').attr('disabled','false');
+						}
+					},1000);
+				}
+			}
+		});
+	});
+
+	$('#step').click(function(){
+		//  获取验证码
+		var value = $('#send').val();
+		if(value == '')
+		{
+			alert('填写验证码');
+			return ;
+		}
+		$.ajax({
+			url:'/homeLogin/PhoneCode?code='+value,
+			type:'get',
+			dataType:'json',
+			success:function(data)
+			{
+				if(data.status == 200)
+				{
+					location.href = '/homeLogin/getSend';
+				}
+				else
+					alert('验证码输入错误！');
+			}
+		});
+	});	
+</script>
+<script>
+	;!function(){
+		var layer = layui.layer
+		,form = layui.form
+		,element = layui.element;
+		
+	}();
+</script>

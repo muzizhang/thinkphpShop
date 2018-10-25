@@ -10,6 +10,13 @@
 
 	<link rel="stylesheet" type="text/css" href="/static/css/webbase.css" />
 	<link rel="stylesheet" type="text/css" href="/static/css/pages-register.css" />
+	<style>
+		.tip {
+			color:red;
+			font-weight: bold;
+			font-size: 14px;
+		}
+	</style>
 </head>
 
 <body>
@@ -26,45 +33,51 @@
 					<div class="control-group">
 						<label class="control-label">用户名：</label>
 						<div class="controls">
-							<input type="text" placeholder="请输入你的用户名" class="input-xfat input-xlarge">
+							<input type="text" name="username" onfocus="ps(username)" placeholder="请输入你的用户名" class="input-xfat input-xlarge">
+							<span class="tip"></span>
 						</div>
 					</div>
 					<div class="control-group">
 						<label for="inputPassword" class="control-label">登录密码：</label>
 						<div class="controls">
-							<input type="password" placeholder="设置登录密码" class="input-xfat input-xlarge">
+							<input type="password" name="password" onfocus="ps(repassword)" onblur="b(password)" placeholder="设置登录密码" class="input-xfat input-xlarge">
+							<span class="tip"></span>
 						</div>
 					</div>
 					<div class="control-group">
 						<label for="inputPassword" class="control-label">确认密码：</label>
 						<div class="controls">
-							<input type="password" placeholder="再次确认密码" class="input-xfat input-xlarge">
+							<input type="password" name="repassword" onfocus="ps(repassword)" onblur="b(repassword)" placeholder="再次确认密码" class="input-xfat input-xlarge">
+							<span class="tip"></span>
 						</div>
 					</div>
 
 					<div class="control-group">
-						<label class="control-label">手机号：</label>
+						<label class="control-label">手机号/邮箱：</label>
 						<div class="controls">
-							<input type="text" placeholder="请输入你的手机号" class="input-xfat input-xlarge">
+							<input type="text" name="phone" onfocus="ps(phone)" placeholder="请输入你的手机号/邮箱号" class="input-xfat input-xlarge">
+							<span class="tip"></span>
 						</div>
 					</div>
 					<div class="control-group">
-						<label for="inputPassword" class="control-label">短信验证码：</label>
+						<label for="inputPassword" class="control-label">验证码：</label>
 						<div class="controls">
-							<input type="text" placeholder="短信验证码" class="input-xfat input-xlarge"> <a href="#">获取短信验证码</a>
+							<input type="text" name="code" placeholder="验证码" class="input-xfat input-xlarge"> 
+							<input style="height: 36px;" type="button" value="获取验证码" />
+							<span class="tip"></span>
 						</div>
 					</div>
 
 					<div class="control-group">
 						<label for="inputPassword" class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
 						<div class="controls">
-							<input name="m1" type="checkbox" value="2" checked=""><span>同意协议并注册《品优购用户协议》</span>
+							<input name="m1" type="checkbox" value="2" checked="checked"><span>同意协议并注册《品优购用户协议》</span>
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label"></label>
 						<div class="controls btn-reg">
-							<a class="sui-btn btn-block btn-xlarge btn-danger" href="/homeLogin/index" target="_blank">完成注册</a>
+							<a class="sui-btn btn-block btn-xlarge btn-danger" href="javaScript:;" target="_blank">完成注册</a>
 						</div>
 					</div>
 				</form>
@@ -94,7 +107,183 @@
 	<script type="text/javascript" src="/static/js/plugins/jquery.easing/jquery.easing.min.js"></script>
 	<script type="text/javascript" src="/static/js/plugins/sui/sui.min.js"></script>
 	<script type="text/javascript" src="/static/js/plugins/jquery-placeholder/jquery.placeholder.min.js"></script>
-	<script type="text/javascript" src="/static/js/pages/register.js"></script>
 </body>
 
 </html>
+<script>
+	//   前端验证
+
+	//   用户名
+	$('input[name=username]').blur(function(){
+		//   获取文本框中的值
+		var value = $(this).val();
+		//  获取当前元素的后一个元素
+		var tip = $(this).next()[0];
+		//   如果文本框中的值为空
+		if($.trim(value) == '')
+			return ;
+		//   如果长度小于6
+		if(value.length < 2)
+			tip.innerHTML = '长度不能小于2，大于20';
+		//   如果长度大于20
+		if(value.length >= 20)
+			tip.innerHTML = '长度不能小于2，大于20';
+		//   判断当前文本框中的值是否为空
+		if($.trim(value) != '' && value.length >= 2 && value.length < 20)
+		{
+			$.ajax({
+				url:'/homeRegister/Username?name='+value,
+				type:'get',
+				dataType:'json',
+				success:function(data){
+					if(data.status != 200)
+					{
+						tip.innerHTML = '用户名已存在';
+					}
+				}
+			});
+		}
+	});
+
+	//  密码
+	//  获取焦点删除提示
+	function ps(o)
+	{
+		var tip = $(o).next()[0];
+		tip.innerHTML = '';
+	}
+	//  失去焦点
+	function b(password)
+    {
+        if(password.name == 'password' || password.name == 'repassword')
+        {
+            var repassword = (password.name == 'password') ? 'repassword' : 'password';
+            password = $('input[name=password]');
+            repassword = $('input[name=repassword]');
+            if(password.val() == '')
+            {
+                return ;
+            }
+            if(repassword.val() != '')
+            {
+                if(repassword.val() != password.val())
+                {
+					var tip = repassword.next()[0];
+					tip.innerHTML = '两次密码不一致,请重新输入';	
+                }
+            }
+        }
+    }
+
+	//  手机号
+	$('input[name=phone]').blur(function(){
+		//  获取到文本框中的值
+		var value = $(this).val();
+		//  获取到下一个元素
+		var phone = $(this).next()[0];
+		//  判断文本框中的值是否为
+		if(value == '')
+			return ;
+		if(!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(value)) && !(/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/).test(value))
+			phone.innerHTML = '请输入正确的信息';
+	})
+	
+	//   点击获取验证码
+	$('input[type=button]').click(function(){
+		//  获取手机号
+		var value = $('input[name=phone]').val();
+		if(value == '')
+			return ;
+		//  获取到下一个元素
+		var phone = $(this).next()[0];
+		$.ajax({
+			url:'/homeRegister/sms',
+			type:'post',
+			data:{phone:value},
+			dataType:'json',
+			success:function(data){
+				if(data.message != 'ok' && data.code != 'ok')
+					phone.innerHTML = '获取验证码失败，请重新获取！';
+			}
+		});
+		var count = 5;
+		set = setInterval(function(){
+			count--;
+			$('input[type=button]').val('剩余'+count+'秒');
+			$('input[type=button]').attr('disabled','disabled');
+			$('input[type=button]').css("background",'#e0e0e0');
+			if(count == 0)
+			{
+				$('input[type=button]').val('发送验证码');
+				clearInterval(set);
+				$('input[type=button]').attr('disabled','false');
+				$('input[type=button]').css("background",'');
+			}
+		},1000);
+	});
+
+	//  完成注册
+	$('.btn-danger').click(function(){
+		//  判断所有的框是否填写完整
+		var name = $('input[name=username]').val();
+		if(name == '')
+		{
+			alert('请填写用户名~');
+			return ;
+		}
+			
+		var password = $('input[name=password]').val();
+		if(password == '')
+		{
+			alert('请填写密码~');
+			return ;
+		}
+			
+		var repassword = $('input[name=repassword]').val();
+		if(repassword == '')
+		{
+			alert('密码不能为空~');
+			return ;
+		}
+			
+		var phone = $('input[name=phone]').val();
+		if(phone == '')
+		{
+			alert('手机号不能为空~');
+			return ;
+		}
+			
+		var code = $('input[name=code]').val();
+		if(code == '')
+		{
+			alert('验证不能为空~');
+			return ;
+		}
+
+		//  判断协议框是否勾选
+		if(!$('input[name=m1]').is(":checked")){
+			alert('请勾选协议~');
+			return ;
+		}
+		
+		$.ajax({
+			url:'/homeRegister/info',
+			type:'post',
+			data:{
+				username:name,
+				password:password,
+				phone:phone,
+				code:code
+			},
+			dataType:'json',
+			success:function(data){
+				if(data.status == 404)
+					alert('验证码输入错误，请重新填写');
+				else
+					location.href = '/homeLogin/index';
+			}
+		});
+		
+	});
+	
+</script>

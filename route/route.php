@@ -32,9 +32,12 @@ Route::controller('homeCart','home/Cart');
 Route::controller('homeGood','home/Good');
 Route::controller('homeSeckill','home/Seckill');
 Route::controller('homeUser','home/User');
-//  资源路由
-// Route::resource('blog','index/blog');
 
+//  测试
+//  资源路由
+// Route::resource('test','home/test');
+Route::rule('test','home/test/test');
+Route::rule('test/captcha','home/test/captcha');
 return [
 
 ];
