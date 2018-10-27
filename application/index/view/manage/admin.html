@@ -32,20 +32,30 @@
 		<div class="administrator">
 			<div class="d_Confirm_Order_style">
 				<div class="search_style">
-
-					<ul class="search_content clearfix">
-						<li><label class="l_f">管理员名称</label><input name="" type="text" class="text_add" placeholder="" style=" width:400px" /></li>
-						<li><label class="l_f">添加时间</label><input class="inline laydate-icon" id="start" style=" margin-left:10px;"></li>
-						<li style="width:90px;"><button type="button" class="btn_search"><i class="fa fa-search"></i>查询</button></li>
-					</ul>
+					<form>
+						<ul class="search_content clearfix">
+							<li>
+								<label class="l_f">管理员名称</label>
+								<input name="name" type="text" class="text_add" value="<?php echo @$_GET['name'];?>" style=" width:400px" />
+							</li>
+							<li>
+								<label class="l_f">添加时间</label>
+								<input class="inline laydate-icon" id="start" name="start" value="<?php echo @$_GET['start'];?>" style=" margin-left:10px;">
+							</li>
+							<li style="width:90px;">
+								<button type="submit" class="btn_search">
+									<i class="fa fa-search"></i>查询
+								</button>
+							</li>
+						</ul>
+					</form>
 				</div>
 				<!--操作-->
 				<div class="border clearfix">
 					<span class="l_f">
-						<a href="javascript:ovid()" id="administrator_add" class="btn btn-warning"><i class="fa fa-plus"></i> 添加管理员</a>
-						<a href="javascript:ovid()" class="btn btn-danger"><i class="fa fa-trash"></i> 批量删除</a>
+						<a href="javascript:;" id="administrator_add" class="btn btn-warning"><i class="fa fa-plus"></i> 添加管理员</a>
+						<a href="javascript:;" class="btn btn-danger"><i class="fa fa-trash"></i> 批量删除</a>
 					</span>
-					<span class="r_f">共：<b>5</b>人</span>
 				</div>
 				<!--管理员列表-->
 				<div class="clearfix administrator_style" id="administrator">
@@ -60,11 +70,16 @@
 									</div>
 									<div class="widget-body">
 										<ul class="b_P_Sort_list">
-											<li><i class="fa fa-users green"></i> <a href="#">全部管理员（13）</a></li>
-											<li><i class="fa fa-users orange"></i> <a href="#">超级管理员（1）</a></li>
-											<li><i class="fa fa-users orange"></i> <a href="#">普通管理员（5）</a></li>
-											<li><i class="fa fa-users orange"></i> <a href="#">产品编辑管理员（4）</a></li>
-											<li><i class="fa fa-users orange"></i> <a href="#">管理员（1）</a></li>
+											<li>
+												<i class="fa fa-users green"></i> 
+												<a href="">所有管理员（{$count['count']}）</a>
+											</li>
+											{foreach $role as $k=>$v}
+											<li>
+												<i class="fa fa-users green"></i> 
+												<a href="?id={$v['id']}">{$v['role_name']}（{$v['count']}）</a>
+											</li>
+											{/foreach}
 										</ul>
 									</div>
 								</div>
@@ -78,8 +93,6 @@
 									<th width="25px"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
 									<th width="80px">编号</th>
 									<th width="250px">登录名</th>
-									<th width="100px">手机</th>
-									<th width="100px">邮箱</th>
 									<th width="100px">角色</th>
 									<th width="180px">加入时间</th>
 									<th width="70px">状态</th>
@@ -87,51 +100,39 @@
 								</tr>
 							</thead>
 							<tbody>
+								{foreach $admin as $k=>$v}
 								<tr>
 									<td><label><input type="checkbox" class="ace"><span class="lbl"></span></label></td>
-									<td>1</td>
-									<td>admin</td>
-									<td>18934334544</td>
-									<td>2345454@qq.com</td>
-									<td>超级管理员</td>
-									<td>2016-6-29 12:34</td>
+									<td>{$k+1}</td>
+									<td>{$v['name']}</td>
+									<td>{$v['role_name']}</td>
+									<td>{$v['created_at']}</td>
 									<td class="td-status"><span class="label label-success radius">已启用</span></td>
 									<td class="td-manage">
 										<a onClick="member_stop(this,'10001')" href="javascript:;" title="停用" class="btn btn-xs btn-success"><i class="fa fa-check  bigger-120"></i></a>
-										<a title="编辑" onclick="member_edit('编辑','member-add.html','4','','510')" href="javascript:;" class="btn btn-xs btn-info"><i
+										<a title="编辑" href="javascript:;" data="{$v['id']}" class="btn btn-xs btn-info administrator_edit"><i
 											 class="fa fa-edit bigger-120"></i></a>
-										<a title="删除" href="javascript:;" onclick="member_del(this,'1')" class="btn btn-xs btn-warning"><i class="fa fa-trash  bigger-120"></i></a>
+										<a title="删除" href="/manage/AdminDelete?id={$v['id']}" onclick="return confirm('确定删除么？');" class="btn btn-xs btn-warning administrator_delete"><i class="fa fa-trash  bigger-120"></i></a>
 									</td>
 								</tr>
-								<tr>
-									<td><label><input type="checkbox" class="ace"><span class="lbl"></span></label></td>
-									<td>2</td>
-									<td>admin12345</td>
-									<td>18934334544</td>
-									<td>2345454@qq.com</td>
-									<td>管理员</td>
-									<td>2016-6-29 12:34</td>
-									<td class="td-status"><span class="label label-success radius">已启用</span></td>
-									<td class="td-manage">
-										<a onClick="member_stop(this,'10001')" href="javascript:;" title="停用" class="btn btn-xs btn-success"><i class="fa fa-check  bigger-120"></i></a>
-										<a title="编辑" onclick="member_edit('编辑','member-add.html','4','','510')" href="javascript:;" class="btn btn-xs btn-info"><i
-											 class="fa fa-edit bigger-120"></i></a>
-										<a title="删除" href="javascript:;" onclick="member_del(this,'1')" class="btn btn-xs btn-warning"><i class="fa fa-trash  bigger-120"></i></a>
-									</td>
-								</tr>
+								{/foreach}
 							</tbody>
 						</table>
+						<div style="margin:0 auto;width: 330px;">
+							{$page|raw}
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!--添加管理员-->
 		<div id="add_administrator_style" class="add_menber" style="display:none">
-			<form action="" method="post" id="form-admin-add">
+			<form method="post" id="form-admin-add">
+				<input type="hidden" class="hidden" value="">
 				<div class="form-group">
 					<label class="form-label"><span class="c-red">*</span>管理员：</label>
 					<div class="formControls">
-						<input type="text" class="input-text" value="" placeholder="" id="user-name" name="user-name" datatype="*2-16"
+						<input type="text" class="input-text" value="" placeholder="管理员名称" name="username" datatype="*2-16"
 						 nullmsg="用户名不能为空">
 					</div>
 					<div class="col-4"> <span class="Validform_checktip"></span></div>
@@ -139,63 +140,24 @@
 				<div class="form-group">
 					<label class="form-label"><span class="c-red">*</span>初始密码：</label>
 					<div class="formControls">
-						<input type="password" placeholder="密码" name="userpassword" autocomplete="off" value="" class="input-text"
+						<input type="password" placeholder="密码" name="password" autocomplete="off" value="" class="input-text"
 						 datatype="*6-20" nullmsg="密码不能为空">
-					</div>
-					<div class="col-4"> <span class="Validform_checktip"></span></div>
-				</div>
-				<div class="form-group">
-					<label class="form-label "><span class="c-red">*</span>确认密码：</label>
-					<div class="formControls ">
-						<input type="password" placeholder="确认新密码" autocomplete="off" class="input-text Validform_error" errormsg="您两次输入的新密码不一致！"
-						 datatype="*" nullmsg="请再输入一次新密码！" recheck="userpassword" id="newpassword2" name="newpassword2">
-					</div>
-					<div class="col-4"> <span class="Validform_checktip"></span></div>
-				</div>
-				<div class="form-group">
-					<label class="form-label "><span class="c-red">*</span>性别：</label>
-					<div class="formControls  skin-minimal">
-						<label><input name="form-field-radio" type="radio" class="ace" checked="checked"><span class="lbl">保密</span></label>&nbsp;&nbsp;
-						<label><input name="form-field-radio" type="radio" class="ace"><span class="lbl">男</span></label>&nbsp;&nbsp;
-						<label><input name="form-field-radio" type="radio" class="ace"><span class="lbl">女</span></label>
-					</div>
-					<div class="col-4"> <span class="Validform_checktip"></span></div>
-				</div>
-				<div class="form-group">
-					<label class="form-label "><span class="c-red">*</span>手机：</label>
-					<div class="formControls ">
-						<input type="text" class="input-text" value="" placeholder="" id="user-tel" name="user-tel" datatype="m" nullmsg="手机不能为空">
-					</div>
-					<div class="col-4"> <span class="Validform_checktip"></span></div>
-				</div>
-				<div class="form-group">
-					<label class="form-label"><span class="c-red">*</span>邮箱：</label>
-					<div class="formControls ">
-						<input type="text" class="input-text" placeholder="@" name="email" id="email" datatype="e" nullmsg="请输入邮箱！">
 					</div>
 					<div class="col-4"> <span class="Validform_checktip"></span></div>
 				</div>
 				<div class="form-group">
 					<label class="form-label">角色：</label>
 					<div class="formControls "> <span class="select-box" style="width:150px;">
-							<select class="select" name="admin-role" size="1">
-								<option value="0">超级管理员</option>
-								<option value="1">管理员</option>
-								<option value="2">栏目主辑</option>
-								<option value="3">栏目编辑</option>
+							<select name="admin-role" size="1">
+								{foreach $roleAll as $v}
+								<option class="option" value="{$v['id']}">{$v['role_name']}</option>
+								{/foreach}
 							</select>
 						</span> </div>
 				</div>
-				<div class="form-group">
-					<label class="form-label">备注：</label>
-					<div class="formControls">
-						<textarea name="" cols="" rows="" class="textarea" placeholder="说点什么...100个字符以内" dragonfly="true" onkeyup="checkLength(this);"></textarea>
-						<span class="wordage">剩余字数：<span id="sy" style="color:Red;">100</span>字</span>
-					</div>
-					<div class="col-4"> </div>
-				</div>
-				<div>
-					<input class="btn btn-primary radius" type="submit" id="Add_Administrator" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+				<!-- <div>
+					<input class="btn btn-primary radius" type="button" id="Add_Administrator" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+				</div>> -->
 			</form>
 		</div>
 	</div>
@@ -303,18 +265,6 @@
 			layer.msg('已启用!', { icon: 6, time: 1000 });
 		});
 	}
-	/*产品-编辑*/
-	function member_edit(title, url, id, w, h) {
-		layer_show(title, url, w, h);
-	}
-
-	/*产品-删除*/
-	function member_del(obj, id) {
-		layer.confirm('确认要删除吗？', function (index) {
-			$(obj).parents("tr").remove();
-			layer.msg('已删除!', { icon: 1, time: 1000 });
-		});
-	}
 	/*添加管理员*/
 	$('#administrator_add').on('click', function () {
 		layer.open({
@@ -323,14 +273,99 @@
 			area: ['700px', ''],
 			shadeClose: false,
 			content: $('#add_administrator_style'),
-
+			btn:['提交'],
+			yes:function(index,layero)
+			{
+				//  获取到页面的数据
+				var username = $('input[name=username]').val();
+				var password = $('input[name=password]').val();
+				var role = $('select[name=admin-role]').val();
+				$.ajax({
+					url:'/manage/AdminAdd',
+					type:'post',
+					data:{
+						username:username,
+						password:password,
+						role:role
+					},
+					dataType:'json',
+					success:function(data)
+					{
+						if(data.status)
+						{
+							layer.close(index);
+						}
+					}
+				});
+			}
 		});
 	})
+
+	/*编辑管理员*/
+	//  获取编辑的自定义属性
+	$('.administrator_edit').on('click', function () {
+		var id = $(this).attr('data');
+		var hidden = $('input[type=hidden]').val(id);
+		layer.open({
+			type: 1,
+			title: '',
+			area: ['700px', ''],
+			shadeClose: false,
+			content: $('#add_administrator_style'),
+			btn:['提交'],
+			success:function(layero,index)
+			{
+				//  获取当前层隐藏域中的value值
+				var Aid = $('input[type=hidden]').val();
+				$.ajax({
+					url:'/manage/EditBefore?id='+Aid,
+					type:'get',
+					dataType:'json',
+					success:function(data)
+					{
+						//  将管理员名称，密码框添加属性  disabled
+						$("input[name=username]").val(data.name);
+						$("input[name=password]").val(data.password);
+						//  循环option
+						$('select option').each(function(){
+							if($(this).val() == data.role_id)
+							{
+								$(this).attr("selected",true);
+							}
+						});
+						$("input[name=username]").attr("disabled", "disabled");
+						$("input[name=password]").attr("disabled", "disabled");
+					}
+				});
+			},
+			yes:function(index,layero)
+			{
+				//  获取当前层隐藏域中的value值
+				var Aid = $('input[type=hidden]').val();
+				// //  获取角色id
+				var role_id = $('select[name=admin-role]').val();
+				$.ajax({
+					url:'/manage/AdminEdit?id='+Aid,
+					type:'post',
+					data:{role_id:role_id},
+					dataType:'json',
+					success:function(data)
+					{
+						if(data.status == 200)
+						{
+							layer.close(index); 
+						}
+					}
+				});
+			}
+		});
+	})
+
 	//表单验证提交
 	$("#form-admin-add").Validform({
 
 		tiptype: 2,
-
+		// ajaxPost:true,
 		callback: function (data) {
 			//form[0].submit();
 			if (data.status == 1) {
@@ -345,7 +380,5 @@
 			parent.layer.close(index);
 			//
 		}
-
-
 	});	
 </script>

@@ -26,6 +26,8 @@ class Login
                         ->find();
         if($user)
         {
+            session('name',$_POST['name']);
+            session('id',$user->id);
             echo json_encode([
                 'status'=>'200'
             ]);

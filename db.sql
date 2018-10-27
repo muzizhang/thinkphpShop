@@ -97,6 +97,30 @@ create table privilege
     primary key (id)
 )engine='InnoDB' comment='权限表';
 
+INSERT INTO privilege(id,pri_name,parent_id,path) VALUES
+(1,'产品模块',0,'-'),
+    (2,'分类列表',1,'product/category'),
+        (3,'添加分类',2,'product/CategoryInsert,product/CategoryAdd'),
+    (4,'品牌列表',1,'product/Brand'),
+        (5,'添加品牌',4,'product/BrandInsert,product/BrandAdd'),
+    (6,'商品列表',1,'product/index'),
+        (7,'添加商品',6,'product/Pinsert,product/Padd'),
+-- (14,'管理员模块','',0),
+--     (15,'权限列表','privilege/index',14),
+--         (16,'添加权限',15,'privilege/create,privilege/insert',15),
+--         (17,'修改权限',15,'privilege/edit,privilege/update',15),
+--         (18,'删除权限',15,'privilege/delete',15),
+--     (19,'角色列表','role/index',14),
+--         (20,'添加角色',19,'role/create,role/insert',19),
+--         (21,'修改角色',19,'role/edit,role/update',19),
+--         (22,'删除角色',19,'role/delete',19),
+--     (23,'管理员列表','admin/index',14),
+--         (24,'添加管理员',23,'admin/create,admin/insert',23),
+--         (25,'修改管理员',23,'admin/edit,admin/update',23),
+--         (26,'删除管理员',23,'admin/delete',23);
+
+
+
 `角色权限表`
 字段
     权限id，角色id
