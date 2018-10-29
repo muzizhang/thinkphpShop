@@ -72,12 +72,12 @@
 										<ul class="b_P_Sort_list">
 											<li>
 												<i class="fa fa-users green"></i> 
-												<a href="">所有管理员（{$count['count']}）</a>
+												<a href="?<?=getUrlParams(['id',''])?>">所有管理员（{$count['count']}）</a>
 											</li>
 											{foreach $role as $k=>$v}
 											<li>
 												<i class="fa fa-users green"></i> 
-												<a href="?id={$v['id']}">{$v['role_name']}（{$v['count']}）</a>
+												<a href="?<?=getUrlParams(['id',$v['id']])?>id={$v['id']}">{$v['role_name']}（{$v['count']}）</a>
 											</li>
 											{/foreach}
 										</ul>
@@ -128,6 +128,7 @@
 		<!--添加管理员-->
 		<div id="add_administrator_style" class="add_menber" style="display:none">
 			<form method="post" id="form-admin-add">
+				{:token('__token__', 'sha1')}
 				<input type="hidden" class="hidden" value="">
 				<div class="form-group">
 					<label class="form-label"><span class="c-red">*</span>管理员：</label>

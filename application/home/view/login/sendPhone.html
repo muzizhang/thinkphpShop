@@ -98,6 +98,7 @@
 	<!-- 内容 -->
 	<div class="container" style="width:310px;margin: 65px auto 0;color:#333;">
 		<form action="">
+			{:token('__token__', 'sha1')}
 			<input type="password" name="password" onfocus="ps(repassword)" onblur="b(password)" placeholder="新密码" style="color:#999;height:17px;line-height: 20px;">
 			<input type="password" name="repassword" onfocus="ps(repassword)" onblur="b(repassword)" placeholder="确认新密码" style="color:#999;height:17px;line-height: 20px;margin-top: 20px;">
 			<span class="tip"></span>

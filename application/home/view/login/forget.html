@@ -111,6 +111,7 @@
 	<!-- 内容 -->
 	<div class="container" style="width:310px;margin: 65px auto 0;color:#333;">
 		<form class="popup" action="/homeLogin/VerifyLoginServlet" method="POST">
+			{:token('__token__', 'sha1')}
 			<input type="text" name="phone" placeholder="请输入邮箱/手机号" style="color:#999;height:17px;line-height: 20px;">
 			<div id="embed-captcha"></div>
 			<p id="wait" class="show">正在加载验证码......</p>

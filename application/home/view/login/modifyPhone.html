@@ -92,6 +92,7 @@
 	<!-- 内容 -->
 	<div class="container" style="width:327px;margin: 65px auto 0;color:#333;">
 		<form action="">
+			{:token('__token__', 'sha1')}
 			<input type="text" name="code" placeholder="请输入验证码" style="width:200px;color:#999;height:17px;line-height: 20px;">
 			<input type="button" id="send" value="发送验证码" style="width:88px;margin-left: 18px;padding:15px 10px;">
 			<!-- 滑块验证 -->

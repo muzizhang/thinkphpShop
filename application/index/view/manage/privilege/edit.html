@@ -22,7 +22,7 @@
 	<script src="/static/assets/layer/layer.js" type="text/javascript"></script>
 	<script src="/static/assets/laydate/laydate.js" type="text/javascript"></script>
 	<script src="/static/js/dragDivResize.js" type="text/javascript"></script>
-	<title>添加权限</title>
+	<title>修改权限</title>
 	<style>
 		.Competence_add_style .left_Competence_add {
 			width: 1389px;
@@ -36,10 +36,11 @@
 <body>
 	<div class="Competence_add_style clearfix">
 		<div class="left_Competence_add">
-			<div class="title_name">添加权限</div>
+			<div class="title_name">修改权限</div>
 			<div style="margin: 0 auto;width:500px; height:472px;">
 				<div class="Competence_add">
-					<form action="/manage/PriUpdate" method="POST">
+					<form action="/manage/PriUpdate?id={$data['id']}" method="POST">
+						{:token('__token__', 'sha1')}
 						<div class="form-group">
 							<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 
 								选择权限
@@ -47,7 +48,7 @@
 							<div class="col-sm-9" style="margin-left:10px;">
 									
 								{foreach name="priId" item="n"}
-									<select name="privilege[]" class="col-xs-10 col-sm-5">
+									<select name="privilege[]" class="col-xs-10 col-sm-5" disabled="disabled">
 										<option value="0">请选择权限</option>
 										{foreach name="pri" item="v"}
 											<option {if condition="$n['id'] == $v['id']"} selected {/if} value="{$v['id']}">
@@ -64,7 +65,7 @@
 							</label>
 							<div class="col-sm-9">
 								{foreach $pri_name as $v}
-								<input type="text" data-id="" placeholder="" value="{$v}" name="name[]" class="col-xs-10 col-sm-5">
+								<input type="text" data-id="" placeholder="" value="{$v}" name="name[]" class="col-xs-10 col-sm-5" disabled="disabled">
 								{/foreach}
 							</div>
 						</div>
@@ -83,7 +84,7 @@
 							<div class="col-sm-9" style="margin-left:10px;">
 								{foreach name="role" item="v"}
 								<label class="middle">
-									<input {if condition="$v['id'] == $data['id']"} checked {/if}  class="ace" name="role[]" value="{$v['id']}" type="checkbox" id="id-disable-check">
+									<input {if condition="$v['id'] == $data['id']"} checked {/if}  class="ace" name="role[]" value="{$v['id']}" type="checkbox" id="id-disable-check" disabled="disabled">
 									<span class="lbl">
 										{$v['role_name']}
 									</span>

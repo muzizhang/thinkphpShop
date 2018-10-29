@@ -40,6 +40,7 @@
 			<div style="margin: 0 auto;width:500px; height:472px;">
 				<div class="Competence_add">
 					<form action="/manage/PriListEdit?id={$pri['id']}" method="POST">
+						{:token('__token__', 'sha1')}
 						<div class="form-group">
 							<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 
 								选择权限

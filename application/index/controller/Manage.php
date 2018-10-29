@@ -176,9 +176,17 @@ class Manage extends Controller
     //   处理编辑
     public function postPriUpdate()
     {
-        
+        //  根据角色id，通过中间表，查出对应的权限id，进行修改
         echo '<pre>';
-        var_dump($_POST);
+        $pri = Db::table('privilege_role')->where('role_id',$_GET['id'])->field('pri_id')->select();
+        foreach($pri as $k=>$v)
+        {
+            Db::name('privilege')
+                ->where('id',$v['pri_id'])
+                ->data(['path'=>$_POST['path'][$k]])
+                ->update();
+        }        
+        $this->redirect('/manage/pri');
     }
 
     //  删除权限
@@ -204,8 +212,6 @@ class Manage extends Controller
     {
         //  取出所有的角色
         $roleAll = Db::table('role')->select();
-        // echo '<pre>';
-        // var_dump($roleAll);
         //  取出所有的角色，并且计算该角色下的管理员人数
         $role = Db::table('role')
                     ->alias('r')
@@ -216,25 +222,30 @@ class Manage extends Controller
         //  取出所有管理员的对应信息，并添加分页,搜索
         $admin = Db::table('admin')
                     ->alias('a')
+                    ->leftJoin('role_admin ra','a.id = ra.admin_id')
+                    ->leftJoin('role r','r.id = ra.role_id')
                     ->where(1,1);
                     
         if(isset($_GET['id']))
         {
-            $admin = $admin->whereor('r.id',$_GET['id']);
+            $admin = $admin->where('r.id',$_GET['id']);
         }
+        
+        
         if(isset($_GET['name']))
         {
-            $admin = $admin->whereor('a.name','like','%'.$_GET['name'].'%');
+            $admin = $admin->where('a.name','like','%'.$_GET['name'].'%');
         }
+        
         if(isset($_GET['start']))
         {
-            $admin = $admin->whereor('a.created_at',$_GET['start']);
+            $admin = $admin->where('a.created_at',">",$_GET['start']);
         }
+        // return $admin->fetchSql()->find();
         $admin = $admin->field('a.*,GROUP_CONCAT(r.role_name) role_name')
-                    ->leftJoin('role_admin ra','a.id = ra.admin_id')
-                    ->leftJoin('role r','r.id = ra.role_id')
                     ->group('a.id')
-                    ->paginate(15);
+                    // ->fetchSql()
+                    ->paginate(1,false,['query'=>request()->param()]);
         //  分页
         //  获取分页显示
         $page = $admin->render();

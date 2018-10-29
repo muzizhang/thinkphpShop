@@ -10,3 +10,18 @@
 // +----------------------------------------------------------------------
 
 // 应用公共文件
+// 获取地址栏的参数
+function getUrlParams($params=[])
+{
+    //  删除循环变量
+    foreach($params as $v)
+    {
+        unset($_GET[$v]);
+    }
+    $str = '';
+    foreach($_GET as $k=>$v)
+    {
+        $str .= "$k={$v}&";
+    }
+    return $str;
+}
