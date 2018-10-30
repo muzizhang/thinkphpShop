@@ -1,7 +1,7 @@
 <?php
 namespace app\index\controller;
 
-class User
+class User extends Base
 {
     //  用户列表
     public function getList()

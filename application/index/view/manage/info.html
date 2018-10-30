@@ -96,16 +96,18 @@
               </tr>
             </thead>
             <tbody>
+              {foreach $admin as $k=>$v}
               <tr>
                 <td><label><input type="checkbox" class="ace"><span class="lbl"></span></label></td>
-                <td>15686</td>
-                <td>1</td>
-                <td>登录成功!</td>
-                <td>江苏南京</td>
-                <td>admin</td>
-                <td>61.233.7.80</td>
-                <td>2014-6-11 11:11:42</td>
+                <td>{$v['id']}</td>
+                <td>{$v['role_name']}</td>
+                <td>{$v['content']}</td>
+                <td>{$v['login_address']}</td>
+                <td>{$v['admin_name']}</td>
+                <td>{$v['login_ip']}</td>
+                <td>{$v['created_at']}</td>
               </tr>
+              {/foreach}
             </tbody>
           </table>
         </div>

@@ -1,7 +1,7 @@
 <?php
 namespace app\index\controller;
 
-class Article
+class Article extends Base
 {
     //  文章列表
     public function getArticleList()

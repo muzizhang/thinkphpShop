@@ -1,7 +1,7 @@
 <?php
 namespace app\index\controller;
 
-class Info
+class Info extends Base
 {
     //  评论，留言
     public function getInfoComment()

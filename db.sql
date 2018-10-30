@@ -50,7 +50,51 @@
 
 `商品分类表`
 字段
-    id，分类名称，上级id，
+    id，分类名称，上级id，path
+
+drop table if exists category;
+create table category
+(
+    id int unsigned not null auto_increment comment 'ID',
+    cate_name VARCHAR(255) not null comment '分类名称',
+    parent_id int unsigned not null DEFAULT 0 comment '上级id',
+    path VARCHAR(255) not null DEFAULT '-' comment 'path',
+    primary key (id)
+)engine='InnoDB' comment='商品分类表';
+
+INSERT INTO category(id,cate_name,parent_id,path) VALUES
+    (1,'家用电器',0,'-'),
+        (2,'电视',1,'-1-'),
+            (3,'曲面电视',2,'-1-2-'),
+            (4,'超薄电视',2,'-1-2-'),
+            (5,'OLED电视',2,'-1-2-'),
+            (6,'4k超清电视',2,'-1-2-'),
+        (7,'冰箱',1,'-1-'),
+            (8,'多门',7,'-1-7-'),
+            (9,'对开门',7,'-1-7-'),
+            (10,'酒柜',7,'-1-7-'),
+            (11,'双门',7,'-1-7-'),
+        (12,'空调',1,'-1-'),
+            (13,'柜式空调',12,'-1-12-'),
+            (14,'中央空调',12,'-1-12-'),
+            (15,'变频空调',12,'-1-12-'),
+            (16,'壁挂式空调',12,'-1-12-'),
+        (17,'洗衣机',1,'-1-'),
+            (18,'滚筒洗衣机',17,'-1-17-'),
+            (19,'洗烘一体机',17,'-1-17-'),
+            (20,'波轮洗衣机',17,'-1-17-'),
+            (21,'迷你洗衣机',17,'-1-17-'),
+    (22,'手机',0,'-'),
+        (23,'手机通讯',22,'-22-'),
+            (24,'手机',23,'-22-23-'),
+            (25,'游戏手机',23,'-22-23-'),
+            (26,'老人机',23,'-22-23-'),
+            (27,'对讲机',23,'-22-23-'),
+        (28,'手机配件',22,'-22-'),
+            (29,'手机壳',28,'-22-28-'),
+            (30,'贴膜',28,'-22-28-'),
+            (31,'移动电源',28,'-22-28-'),
+            (32,'数据线',28,'-22-28-');
 
 `品牌表`
 字段
@@ -83,9 +127,74 @@
     3    4G       2
     4    64G      2
 
+
+`管理员登录表`
+字段
+    id，管理员id，管理员名称，登录时间，登录ip，登录地点，内容
+
+drop table if exists admin_login;
+create table admin_login
+(
+    id int unsigned not null auto_increment comment 'ID',
+    admin_id int unsigned not null comment '管理员id',
+    admin_name VARCHAR(255) not null comment '管理员名称',
+    content VARCHAR(255) not null default "登录成功" comment "登录状态",
+    login_ip VARCHAR(255) not null comment '登录ip',
+    login_address VARCHAR(255) not null comment '登录地点',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP not null comment '登录时间',
+    primary key (id),
+    key admin_id(admin_id) 
+)engine="InnoDB" comment='后台管理员登录记录表';
+
+`后台日志表`
+记录后台用户的行为记录，创建时间
+    id，管理员id，管理员名称，管理员角色，操作行为[操作的id(添加/修改/删除商品的id)，操作的内容]，创建时间，行为类型id，行为path，
+
+drop table if exists admin_logs;
+create table admin_logs
+(
+    id int unsigned not null auto_increment comment "ID",
+    admin_id int unsigned not null comment '管理员id',
+    admin_name VARCHAR(255) not null comment '管理员名称',
+    admin_role VARCHAR(255) not null comment '管理员角色',
+    behavior_type_id int unsigned not null comment '行为类型id',
+    behavior_type_path VARCHAR(255) not null comment '行为类型path',
+    practive VARCHAR(255) not null comment '操作行为[操作id，操作内容]',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP not null comment '创建时间',
+    primary key (id),
+    key admin_id(admin_id),
+    key behavior_type_id(behavior_type_id)
+)engine='InnoDB' comment="后台日志表";
+
+-- `后台行为类型表`
+-- 字段
+--     id，类型名称，parent_id，path       pri_id
+--     1    产品       0         -           1
+--     2    商品       1         -1-         6
+--     3    添加商品   2         -1-2-       7
+
+-- drop table if exists admin_behavior_type;
+-- create table admin_behavior_type
+-- (
+--     id int unsigned not null auto_increment comment 'ID',
+--     type_name VARCHAR(255) not null comment '类型名称',
+--     parent_id int unsigned not null DEFAULT '0' comment '上级id',
+--     path VARCHAR(255) not null DEFAULT '-' comment 'path',
+--     pri_id int unsigned not null comment '权限id',
+--     primary key (id)
+-- )engine='InnoDB' comment='后台行为类型表';
+
+-- INSERT INTO admin_behavior_type(id,type_name,parent_id,path,pri_id) VALUES
+--     (1,'产品模块',0,'-',1),
+--         (2,'商品',1,'-1-',6),
+--             (3,'添加商品',2,'-1-2-',7),
+--             (4,'修改商品',2,'-1-2-',10),
+--             (5,'删除商品',2,'-1-2-',11);
+
+
 `权限表`
 字段
-    id，权限名称，上级id，path
+    id，权限名称，上级id，path,url
 
 drop table if exists privilege;
 create table privilege
@@ -93,18 +202,19 @@ create table privilege
     id int unsigned not null auto_increment comment 'ID',
     pri_name varchar(255) not null comment '权限名称',
     parent_id int unsigned not null default '0' comment '上级id',
-    path VARCHAR(255) not null default '-' comment 'path路径',
+    url VARCHAR(255) not null default '' comment 'url路径',
+    path VARCHAR(255) not null DEFAULT '-' comment 'path',
     primary key (id)
 )engine='InnoDB' comment='权限表';
 
-INSERT INTO privilege(id,pri_name,parent_id,path) VALUES
-(1,'产品模块',0,'-'),
-    (2,'分类列表',1,'product/category'),
-        (3,'添加分类',2,'product/CategoryInsert,product/CategoryAdd'),
-    (4,'品牌列表',1,'product/Brand'),
-        (5,'添加品牌',4,'product/BrandInsert,product/BrandAdd'),
-    (6,'商品列表',1,'product/index'),
-        (7,'添加商品',6,'product/Pinsert,product/Padd'),
+INSERT INTO privilege(id,pri_name,parent_id,url,path) VALUES
+(1,'产品模块',0,'','-'),
+    (2,'分类列表',1,'product/category','-1-'),
+        (3,'添加分类',2,'product/CategoryInsert,product/CategoryAdd','-1-2-'),
+    (4,'品牌列表',1,'product/Brand','-1-'),
+        (5,'添加品牌',4,'product/BrandInsert,product/BrandAdd','-1-4-'),
+    (6,'商品列表',1,'product/index','-1-'),
+        (7,'添加商品',6,'product/Pinsert,product/Padd','-1-6-'),
 -- (14,'管理员模块','',0),
 --     (15,'权限列表','privilege/index',14),
 --         (16,'添加权限',15,'privilege/create,privilege/insert',15),
@@ -191,68 +301,6 @@ create table admin
 `广告表`
 字段
     id，区域[显示位置]，类型，内容，链接，图片，标题，点击数，订单数，创建时间，失效时间，状态[0 失效  1 创建]，
-
-`管理员登录表`
-字段
-    id，管理员id，管理员名称，登录时间，登录ip，登录地点，内容
-
-drop table if exists admin_login;
-create table admin_login
-(
-    id int unsigned not null auto_increment comment 'ID',
-    admin_id int unsigned not null comment '管理员id',
-    admin_name VARCHAR(255) not null comment '管理员名称',
-    content VARCHAR(255) not null default "登录成功" comment "登录状态",
-    login_ip VARCHAR(255) not null comment '登录ip',
-    login_address VARCHAR(255) not null comment '登录地点',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP not null comment '登录时间',
-    primary key (id),
-    key admin_id(admin_id) 
-)engine="InnoDB" comment='后台管理员登录记录表';
-
-`后台日志表`
-记录后台用户的行为记录，创建时间
-    id，管理员id，管理员名称，管理员角色，操作行为[操作的id(添加/修改/删除商品的id)，操作的内容]，创建时间，行为类型id，行为path，
-
-drop table if exists admin_logs;
-create table admin_logs
-(
-    id int unsigned not null auto_increment comment "ID",
-    admin_id int unsigned not null comment '管理员id',
-    admin_name VARCHAR(255) not null comment '管理员名称',
-    admin_role VARCHAR(255) not null comment '管理员角色',
-    behavior_type_id int unsigned not null comment '行为类型id',
-    behavior_type_path VARCHAR(255) not null comment '行为类型path',
-    practive VARCHAR(255) not null comment '操作行为[操作id，操作内容]',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP not null comment '创建时间',
-    primary key (id),
-    key admin_id(admin_id),
-    key behavior_type_id(behavior_type_id)
-)engine='InnoDB' comment="后台日志表";
-
-`后台行为类型表`
-字段
-    id，类型名称，parent_id，path
-    1    产品       0         -
-    2    商品       1         -1-
-    3    添加商品   2         -1-2-
-
-drop table if exists admin_behavior_type;
-create table admin_behavior_type
-(
-    id int unsigned not null auto_increment comment 'ID',
-    type_name VARCHAR(255) not null comment '类型名称',
-    parent_id int unsigned not null DEFAULT '0' comment '上级id',
-    path VARCHAR(255) not null DEFAULT '-' comment 'path',
-    primary key (id)
-)engine='InnoDB' comment='后台行为类型表';
-
-INSERT INTO admin_behavior_type(id,type_name,parent_id,path) VALUES
-    (1,'产品模块',0,'-'),
-        (2,'商品',1,'-1-'),
-            (3,'添加商品',2,'-1-2-'),
-            (4,'修改商品',2,'-1-2-'),
-            (5,'删除商品',2,'-1-2-');
 
 `优惠券`
 字段

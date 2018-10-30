@@ -1,7 +1,7 @@
 <?php
 namespace app\index\controller;
 
-class Order
+class Order extends Base
 {
     //   订单信息
     public function getInfo()

@@ -2,7 +2,7 @@
 namespace app\index\controller;
 
 
-class Product
+class Product extends Base
 {
     //  产品列表页
     public function getindex()

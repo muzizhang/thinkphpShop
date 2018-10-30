@@ -3,11 +3,9 @@ namespace app\index\controller;
 
 use think\captcha\Captcha;
 use app\index\model\User;
-use think\Controller;
 
-class Login extends Controller
+class Login extends Base
 {
-    protected $middleware = ['InLoginCheck'];
     public function index()
     {
         return view('index');
@@ -31,30 +29,6 @@ class Login extends Controller
             session('name',$_POST['name']);
             session('id',$user->id);
             //  写入用户登录信息表
-            if(request()->ip == '0.0.0.0')
-            {
-                \Db::name('admin_login')
-                    ->data([
-                        'admin_id'=>$user->id,
-                        'admin_name'=>$_POST['name'],
-                        'content'=>'登陆成功',
-                        'login_ip'=>request()->ip,
-                        'login_address'=>'无法获取',
-                    ])
-                    ->insert();
-            }
-            else
-            {
-                \Db::name('admin_login')
-                    ->data([
-                        'admin_id'=>$user->id,
-                        'admin_name'=>$_POST['name'],
-                        'content'=>'登陆成功',
-                        'login_ip'=>request()->ip,
-                        'login_address'=>request()->InLoginCheck,
-                    ])
-                    ->insert();
-            }
             echo json_encode([
                 'status'=>'200'
             ]);

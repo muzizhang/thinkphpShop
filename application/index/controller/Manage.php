@@ -5,9 +5,8 @@ use app\index\model\Privilege;
 use think\Db;
 use app\index\model\Admin;
 use app\index\model\RoleAdmin;
-use think\Controller;
 
-class Manage extends Controller
+class Manage extends Base
 {
     //  权限列表
     public function getPri()
@@ -321,8 +320,19 @@ class Manage extends Controller
                     ->leftJoin('role_admin ra','a.id = ra.admin_id')
                     ->leftJoin('role r','r.id = ra.role_id')
                     ->find();
+        //  显示管理员登录记录
+        $admin = Db::table('admin_login')
+                    ->alias('a')
+                    ->field('a.*,r.role_name')
+                    ->leftJoin('role_admin ra','a.admin_id = ra.admin_id')
+                    ->leftJoin('role r','ra.role_id = r.id')
+                    ->order('id','desc')
+                    ->select();
+        // echo '<pre>';
+        // var_dump($admin);
         return view('manage/info',[
             'user'=>$user,
+            'admin'=>$admin
         ]);
     }
 

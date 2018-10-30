@@ -1,7 +1,7 @@
 <?php
 namespace app\index\controller;
 
-class System
+class System extends Base
 {
     //  系统设置
     public function getindex()

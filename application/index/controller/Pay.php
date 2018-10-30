@@ -1,7 +1,7 @@
 <?php
 namespace app\index\controller;
 
-class Pay
+class Pay extends Base
 {
     //  支付管理
     public function getindex()

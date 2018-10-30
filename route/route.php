@@ -14,7 +14,7 @@
 //   快捷路由
 Route::controller('index','index/Index');
 Route::rule('login/index','index/Login/index');
-Route::rule('login/Login','index/Login/Login');
+Route::rule('login/Login$','index/Login/Login')->middleware('InLoginCheck');
 Route::rule('login/Verify','index/Login/Verify');
 Route::controller('product','index/Product');
 Route::controller('article','index/Article');
@@ -24,6 +24,8 @@ Route::controller('order','index/Order');
 Route::controller('pay','index/Pay');
 Route::controller('system','index/System');
 Route::controller('user','index/User');
+
+Route::controller('base','index/Base');
 
 
 //  前台

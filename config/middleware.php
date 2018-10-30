@@ -15,4 +15,5 @@
 return [
     // 默认中间件命名空间
     'default_namespace' => 'app\\http\\middleware\\',
+    'InLoginCheck'=>app\http\middleware\InLoginCheck::class,
 ];
