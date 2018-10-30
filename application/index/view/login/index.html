@@ -69,7 +69,7 @@
 											<label class="Codes_icon"></label>
 											<input name="code" type="text" placeholder="验证码" id="Codes_text" />
 											<div class="Codes_region" style="width:110px;">
-												<img width="110" height="38" onclick="this.src=this.src" src="/login/verify" alt="captcha" />
+												<img width="110" height="38" onclick="this.src=this.src" src="/login/Verify" alt="captcha" />
 											</div>
 										</li>
 
@@ -144,7 +144,7 @@
 			data:{
 				name:name,
 				password:pwd,
-				code:code
+				'code':code
 			},
 			dataType:'json',
 			success:function(data)

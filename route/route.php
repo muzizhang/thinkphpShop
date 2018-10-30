@@ -13,7 +13,9 @@
 //   后台
 //   快捷路由
 Route::controller('index','index/Index');
-Route::controller('login','index/Login');
+Route::rule('login/index','index/Login/index');
+Route::rule('login/Login','index/Login/Login');
+Route::rule('login/Verify','index/Login/Verify');
 Route::controller('product','index/Product');
 Route::controller('article','index/Article');
 Route::controller('info','index/Info');
@@ -36,7 +38,9 @@ Route::controller('homeUser','home/User');
 //  测试
 //  资源路由
 // Route::resource('test','home/test');
-
+Route::rule('test/read','index/test/read');
+Route::rule('test/redis','index/test/redis');
+Route::rule('test/ip','index/test/ip');
 return [
 
 ];

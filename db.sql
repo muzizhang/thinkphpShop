@@ -192,9 +192,67 @@ create table admin
 字段
     id，区域[显示位置]，类型，内容，链接，图片，标题，点击数，订单数，创建时间，失效时间，状态[0 失效  1 创建]，
 
-`日志表`
+`管理员登录表`
+字段
+    id，管理员id，管理员名称，登录时间，登录ip，登录地点，内容
+
+drop table if exists admin_login;
+create table admin_login
+(
+    id int unsigned not null auto_increment comment 'ID',
+    admin_id int unsigned not null comment '管理员id',
+    admin_name VARCHAR(255) not null comment '管理员名称',
+    content VARCHAR(255) not null default "登录成功" comment "登录状态",
+    login_ip VARCHAR(255) not null comment '登录ip',
+    login_address VARCHAR(255) not null comment '登录地点',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP not null comment '登录时间',
+    primary key (id),
+    key admin_id(admin_id) 
+)engine="InnoDB" comment='后台管理员登录记录表';
+
+`后台日志表`
 记录后台用户的行为记录，创建时间
-    id，访问路径，管理员id，创建时间，管理员名称，
+    id，管理员id，管理员名称，管理员角色，操作行为[操作的id(添加/修改/删除商品的id)，操作的内容]，创建时间，行为类型id，行为path，
+
+drop table if exists admin_logs;
+create table admin_logs
+(
+    id int unsigned not null auto_increment comment "ID",
+    admin_id int unsigned not null comment '管理员id',
+    admin_name VARCHAR(255) not null comment '管理员名称',
+    admin_role VARCHAR(255) not null comment '管理员角色',
+    behavior_type_id int unsigned not null comment '行为类型id',
+    behavior_type_path VARCHAR(255) not null comment '行为类型path',
+    practive VARCHAR(255) not null comment '操作行为[操作id，操作内容]',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP not null comment '创建时间',
+    primary key (id),
+    key admin_id(admin_id),
+    key behavior_type_id(behavior_type_id)
+)engine='InnoDB' comment="后台日志表";
+
+`后台行为类型表`
+字段
+    id，类型名称，parent_id，path
+    1    产品       0         -
+    2    商品       1         -1-
+    3    添加商品   2         -1-2-
+
+drop table if exists admin_behavior_type;
+create table admin_behavior_type
+(
+    id int unsigned not null auto_increment comment 'ID',
+    type_name VARCHAR(255) not null comment '类型名称',
+    parent_id int unsigned not null DEFAULT '0' comment '上级id',
+    path VARCHAR(255) not null DEFAULT '-' comment 'path',
+    primary key (id)
+)engine='InnoDB' comment='后台行为类型表';
+
+INSERT INTO admin_behavior_type(id,type_name,parent_id,path) VALUES
+    (1,'产品模块',0,'-'),
+        (2,'商品',1,'-1-'),
+            (3,'添加商品',2,'-1-2-'),
+            (4,'修改商品',2,'-1-2-'),
+            (5,'删除商品',2,'-1-2-');
 
 `优惠券`
 字段
@@ -205,8 +263,11 @@ create table admin
 
 
 
-
-
+获取ip信息
+http://api.map.baidu.com/location/ip?ip=118.75.163.0&ak=639GKD6xyO3u82qD0aDxV2Rmdo9nVaaH
+http://ip.taobao.com/service/getIpInfo.php?ip=118.75.163.0
+http://apis.juhe.cn/ip/ip2addr?ip=36.23.225.26&key=63b18b9d95e59ee7dccc9e6476aaeb7b
+http://api.ip138.com/query/?ip=8.8.8.8&datatype=jsonp&callback=find&token=4c3ea19d8bc48bdbccba23300fad2140
 ~~~PHP
 
 银行卡
