@@ -98,7 +98,7 @@ INSERT INTO category(id,cate_name,parent_id,path) VALUES
 
 `品牌表`
 字段
-    id，品牌名称，品牌LOGO，链接，描述
+    id，品牌名称，品牌LOGO，链接，描述，时间，品牌类型[国内国外]
 
 drop table if exists brand;
 create table brand
@@ -106,13 +106,12 @@ create table brand
     id int unsigned not null auto_increment comment 'ID',
     brand_name VARCHAR(255) not null comment '品牌名称',
     brand_LOGO VARCHAR(255) not null comment '品牌LOGO',
+    brand_type int unsigned not null comment '品牌类型[1：国内，0：国外]',
     link VARCHAR(255) not null comment '链接',
     description VARCHAR(255) not null comment '描述',
+    created_at datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     PRIMARY key (id)
 )engine='InnoDB' comment='品牌表';
-
-INSERT INTO brand(id,brand_name,brand_LOGO,link,description) VALUES
-    (1,)
 
 `商品属性表`
 字段

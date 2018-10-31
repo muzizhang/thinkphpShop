@@ -1,6 +1,8 @@
 <?php
 namespace app\index\controller;
 
+use think\Request;
+use think\facade\Env;
 
 class Product extends Base
 {
@@ -143,12 +145,125 @@ class Product extends Base
     //  品牌列表
     public function getBrand()
     {
-        return view('product/brand/index');
+        //  取出所有的品牌信息
+        $data = \Db::table('brand')
+                    ->where(1,1);
+        if(isset($_GET['name']))
+        {
+            $data = $data->where('brand_name','like','%'.$_GET['name'].'%')
+                        ->whereor('description','like','%'.$_GET['name'].'%');
+        }
+        if(isset($_GET['start']))
+        {
+            $data = $data->where('created_at','>',$_GET['start']);
+        }
+        if(isset($_GET['type']))
+        {
+            $data = $data->where('brand_type',$_GET['type']);
+        }
+        $data = $data->paginate(1,false,['query'=>request()->param()]);
+        $page = $data->render();
+        return view('product/brand/index',[
+            'data'=>$data,
+            'page'=>$page
+        ]);
     }
 
     //  添加品牌
     public function getBrandInsert()
     {
-        return view('product/brand/insert');
+        $req = new Request();
+        $token = $req->token('__token__','sha1');
+        return view('product/brand/insert',[
+            'token'=>$token
+        ]);
+    }
+
+    //  处理品牌添加
+    public function postBrandAdd()
+    {
+        // 获取表单上传文件 例如上传了001.jpg
+        $file = request()->file('image');
+        // 移动到框架应用根目录/uploads/ 目录下
+        $info = $file->validate(['size'=>5242880,'ext'=>'jpg,png,gif,bmp,jpeg,webp,tif,pcx'])
+                    ->move(Env::get('root_path').'public/static/upload');
+        if($info){
+            // 输出 20160820/42a79759f284b767dfcb2a0197904287.jpg
+            //  上传成功，将其保存到数据库中
+            \Db::table('brand')
+                ->data([
+                    'brand_name'=>$_POST['brand_name'],
+                    'brand_LOGO'=>'/upload/'.$info->getSaveName(),
+                    'brand_type'=>$_POST['type'],
+                    'link'=>$_POST['brand_link'],
+                    'description'=>$_POST['brand_desc']
+                ])
+                ->insert();
+
+            $this->redirect('/product/Brand');
+        }else{
+            // 上传失败获取错误信息
+            echo $file->getError();
+        }
+    }
+
+    //   编辑品牌
+    public function getBrandEdit()
+    {
+        //    取出当前品牌
+        $data = \Db::table('brand')
+                    ->where('id',$_GET['id'])
+                    ->find();
+        return view('product/brand/edit',[
+            'data'=>$data
+        ]);
+    }
+
+    //  处理编辑
+    public function postBrandUpdate()
+    {
+        //  删除原图片
+        $img = \Db::table('brand')
+                    ->where('id',$_GET['id'])
+                    ->field('brand_LOGO')
+                    ->find();
+        unlink(Env::get('root_path').'/public/static'.$img['brand_LOGO']);
+        // 获取表单上传文件 例如上传了001.jpg
+        $file = request()->file('image');
+        // 移动到框架应用根目录/uploads/ 目录下
+        $info = $file->validate(['size'=>5242880,'ext'=>'jpg,png,gif,bmp,jpeg,webp,tif,pcx'])
+                    ->move(Env::get('root_path').'public/static/upload');
+        if($info){
+            //  上传成功，将其保存到数据库中
+            \Db::name('brand')
+                ->where('id',$_GET['id'])
+                ->data([
+                    'brand_name'=>$_POST['brand_name'],
+                    'brand_LOGO'=>'/upload/'.$info->getSaveName(),
+                    'brand_type'=>$_POST['type'],
+                    'link'=>$_POST['brand_link'],
+                    'description'=>$_POST['brand_desc']
+                ])
+                ->update();
+
+            $this->redirect('/product/Brand');
+        }else{
+            // 上传失败获取错误信息
+            echo $file->getError();
+        }
+    }
+
+    //  删除品牌
+    public function getBrandDelete()
+    {
+        //  删除图片
+        $img = \Db::table('brand')
+                    ->where('id',$_GET['id'])
+                    ->field('brand_LOGO')
+                    ->find();
+        unlink(Env::get('root_path').'/public/static'.$img['brand_LOGO']);
+        //  删除数据库中的数据
+        \Db::table('brand')->where('id',$_GET['id'])->delete();
+        $this->redirect('/product/Brand');
     }
 }
