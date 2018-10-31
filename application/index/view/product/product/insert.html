@@ -246,24 +246,36 @@
             }
         };
 
-        var zNodes = [
-            { id: 1, pId: 0, name: "商城分类列表", open: true },
-            { id: 11, pId: 1, name: "蔬菜水果" },
-            { id: 111, pId: 11, name: "蔬菜" },
-            { id: 112, pId: 11, name: "苹果" },
-            { id: 113, pId: 11, name: "大蒜" },
-            { id: 114, pId: 11, name: "白菜" },
-            { id: 115, pId: 11, name: "青菜" },
-            { id: 12, pId: 1, name: "手机数码" },
-            { id: 121, pId: 12, name: "手机 " },
-            { id: 122, pId: 12, name: "照相机 " },
-            { id: 13, pId: 1, name: "电脑配件" },
-            { id: 131, pId: 13, name: "手机 " },
-            { id: 122, pId: 13, name: "照相机 " },
-            { id: 14, pId: 1, name: "服装鞋帽" },
-            { id: 141, pId: 14, name: "手机 " },
-            { id: 42, pId: 14, name: "照相机 " },
-        ];
+        var categoryDate;
+        function a()
+        {
+            $.ajax({
+                url:'/product/CategoryAll',
+                async:false,
+                type:'get',
+                dataType:'json',
+                success:function(data)
+                {
+                    categoryDate = data['data'];
+                }
+            });
+            return categoryDate;
+        }
+        a();
+        var zNodes = '';
+            for(var i=0;i<categoryDate.length;i++)
+            {
+                if(categoryDate[i].parent_id == 0)
+                {
+                    zNodes += '{ id: '+categoryDate[i].id+', pId: '+categoryDate[i].parent_id+', name: "'+categoryDate[i].cate_name+'", open: true },'
+                }
+                else
+                {
+                    zNodes += '{ id: '+categoryDate[i].id+', pId: '+categoryDate[i].parent_id+', name: "'+categoryDate[i].cate_name+'" },';
+                }
+            }
+        //  将字符串转换为数组
+        zNodes =  eval("["+zNodes+"]");
 
         var code;
 

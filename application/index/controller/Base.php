@@ -39,14 +39,14 @@ class Base extends Controller
             //  编辑，删除
             if(isset($params))
             {
-                $this->Edit_Delete($params,$data,$role_name['role_name']);
+                // $this->Edit_Delete($params,$data,$role_name['role_name']);
             }
 
             //  新建
             //   判断其路径中是否存在，insert /  add  等字符串
             if(stripos($url,'insert'))
             {
-                $this->insert($data,$role_name['role_name']);
+                // $this->insert($data,$role_name['role_name']);
             }
         }
     }

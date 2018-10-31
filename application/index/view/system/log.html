@@ -24,18 +24,36 @@
     <script src="/static/js/displayPart.js" type="text/javascript"></script>
     <script src="/static/assets/laydate/laydate.js" type="text/javascript"></script>
     <title>系统日志</title>
+    <style>
+        .Resolution .dataTables_wrapper
+        {
+            width:1230px;
+        }
+    </style>
 </head>
 
 <body>
     <div class="margin clearfix">
         <div id="system_style">
             <div class="search_style">
-
-                <ul class="search_content clearfix">
-                    <li><label class="l_f">名称</label><input name="" type="text" class="text_add" style=" width:250px"></li>
-                    <li><label class="l_f">时间</label><input class="inline laydate-icon" id="start" style=" margin-left:10px;"></li>
-                    <li style="width:90px;"><button type="button" class="btn_search"><i class="fa fa-search"></i>查询</button></li>
-                </ul>
+                <form>
+                    <ul class="search_content clearfix">
+                        <li>
+                            <label class="l_f">名称</label>
+                            <input name="name" type="text" value="<?=@$_GET['name']?>" class="text_add" style=" width:250px">
+                        </li>
+                        <li>
+                            <label class="l_f">时间</label>
+                            <input name="start" class="inline laydate-icon" value="<?=@$_GET['start']?>" id="start" style=" margin-left:10px;">
+                        </li>
+                        <li style="width:90px;">
+                            <button type="submit" class="btn_search">
+                                <i class="fa fa-search"></i>
+                                查询
+                            </button>
+                        </li>
+                    </ul>
+                </form>
             </div>
             <!--系统日志-->
             <div class="system_logs">
@@ -43,65 +61,35 @@
                     <thead>
                         <tr>
                             <th width="80px">ID</th>
-                            <th width="120px">登录用户</th>
+                            <th width="120px">用户ID</th>
+                            <th width="120px">用户名称</th>
                             <th width="120px">角色</th>
+                            <th width="120px">行为类型id</th>
+                            <th width="120px">行为类型名称</th>
+                            <th width="120px">行为类型path</th>
                             <th width="">操作内容</th>
                             <th width="150px">操作时间</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {foreach $data as $v}
                         <tr>
-                            <td>1233</td>
-                            <td>admin</td>
-                            <td>超级管理员</td>
-                            <td>添加商品名称我的用凤凰花刮大风</td>
-                            <td>2016-7-26 12:34</td>
+                            <td>{$v['id']}</td>
+                            <td>{$v['admin_id']}</td>
+                            <td>{$v['admin_name']}</td>
+                            <td>{$v['admin_role']}</td>
+                            <td>{$v['behavior_type_id']}</td>
+                            <td>{$v['behavior_type_name']}</td>
+                            <td>{$v['behavior_type_path']}</td>
+                            <td>{$v['practive']}</td>
+                            <td>{$v['created_at']}</td>
                         </tr>
-                        <tr>
-                            <td>3434</td>
-                            <td>admin</td>
-                            <td>超级管理员</td>
-                            <td>添加商品名称我的用凤凰花刮大风</td>
-                            <td>2016-7-26 11:23</td>
-                        </tr>
-                        <tr>
-                            <td>2423</td>
-                            <td>admin</td>
-                            <td>超级管理员</td>
-                            <td>添加商品名称我的用凤凰花刮大风</td>
-                            <td>2016-7-26 13:34</td>
-                        </tr>
-                        <tr>
-                            <td>555</td>
-                            <td>admin</td>
-                            <td>超级管理员</td>
-                            <td>添加商品名称我的用凤凰花刮大风</td>
-                            <td>2016-7-16</td>
-                        </tr>
-                        <tr>
-                            <td>1233</td>
-                            <td>admin</td>
-                            <td>超级管理员</td>
-                            <td>添加商品名称我的用凤凰花刮大风</td>
-                            <td>2016-6-26</td>
-                        </tr>
-                        <tr>
-                            <td>1233</td>
-                            <td>admin</td>
-                            <td>超级管理员</td>
-                            <td>添加商品名称我的用凤凰花刮大风</td>
-                            <td>2016-4-26</td>
-                        </tr>
-                        <tr>
-                            <td>5345</td>
-                            <td>admin</td>
-                            <td>超级管理员</td>
-                            <td>添加商品名称我的用凤凰花刮大风</td>
-                            <td>2016-5-26</td>
-                        </tr>
+                        {/foreach}
                     </tbody>
                 </table>
-
+                <div style="text-align: center;">
+                    {$page|raw}
+                </div>
             </div>
         </div>
     </div>
@@ -119,7 +107,7 @@
             "bStateSave": true,//状态保存
             "aoColumnDefs": [
                 //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
-                { "orderable": false, "aTargets": [0, 1, 2, 3] }// 制定列不参与排序
+                { "orderable": false, "aTargets": [0, 1, 2, 3,4,5,6,7,8,9] }// 制定列不参与排序
             ]
         });
     })

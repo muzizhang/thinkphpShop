@@ -230,7 +230,6 @@ class Manage extends Base
             $admin = $admin->where('r.id',$_GET['id']);
         }
         
-        
         if(isset($_GET['name']))
         {
             $admin = $admin->where('a.name','like','%'.$_GET['name'].'%');
@@ -240,10 +239,9 @@ class Manage extends Base
         {
             $admin = $admin->where('a.created_at',">",$_GET['start']);
         }
-        // return $admin->fetchSql()->find();
+   
         $admin = $admin->field('a.*,GROUP_CONCAT(r.role_name) role_name')
                     ->group('a.id')
-                    // ->fetchSql()
                     ->paginate(1,false,['query'=>request()->param()]);
         //  分页
         //  获取分页显示

@@ -20,7 +20,7 @@
 		<![endif]-->
   <script src="/static/js/jquery-1.9.1.min.js"></script>
   <script src="/static/assets/js/bootstrap.min.js"></script>
-  <title>添加产品分类</title>
+  <title>编辑产品分类</title>
 </head>
 
 <body>
@@ -32,22 +32,24 @@
         <a href="javascript:ovid()" class="btn  btn-success"><i class="icon-ok align-top bigger-125"></i>禁用该类型</a>
         <a href="javascript:ovid()" class="btn  btn-danger"><i class="icon-trash   align-top bigger-125"></i>删除该类型</a>
       </div> -->
-      <form action="/product/CategoryAdd" method="post" class="form form-horizontal" id="form-user-add">
+      <form action="/product/CategoryUpdate?id={$data['id']}" method="post" class="form form-horizontal" id="form-user-add">
         <div class="Operate_cont clearfix">
           <label class="form-label"><span class="c-red">*</span>分类：</label>
           <div class="formControls" style="margin-left: 20px;width: 300px;">
-            <select name="cat1_id" id="">
-              <option value="">请选择</option>
-              {foreach $cat1_id as $v}
-                <option value="{$v['id']}">{$v['cate_name']}</option>
-              {/foreach}
-            </select>
+              <select name="cat_id" id="" disabled>
+                <option value="">请选择</option>
+                {foreach $cat1_id as $v}
+                  <option {if($v['id'] == $data['parent_id'])} selected {/if} value="{$v['id']}">
+                    <?php echo str_repeat('&nbsp;',(count(explode('-',$v['pathId']))-3)*4).$v['cate_name'] ?>
+                  </option>
+                {/foreach}
+              </select>
           </div>
         </div>
         <div class="Operate_cont clearfix">
           <label class="form-label"><span class="c-red">*</span>分类名称：</label>
           <div class="formControls ">
-            <input type="text" class="input-text" value="" placeholder="" id="user-name" name="category_name">
+            <input type="text" class="input-text" value="{$data['cate_name']}" placeholder="" id="user-name" name="category_name">
           </div>
         </div>
         <div class="">
@@ -94,7 +96,7 @@
         return ;
       }
       //  根据获取到的id，查找二级分类
-      html += '<select name="cat2_id" id=""><option value="">请选择</option>';
+      html += '<select name="cat2_id" onchange="cat2(this)" id=""><option value="">请选择</option>';
         $.ajax({
           url:'/product/Cat2_id?id='+value,
           type:'get',
@@ -112,6 +114,27 @@
       $(this).after(html);
     });
 
+    function cat2(o)
+    {
+      var html = '';
+      var value = $(o).val();
+      html += '<select name="cat2_id" id=""><option value="">请选择</option>';
+        $.ajax({
+          url:'/product/Cat2_id?id='+value,
+          type:'get',
+          async:false,
+          dataType:'json',
+          success:function(data)
+          {
+            for(var i=0;i<data['data'].length;i++)
+            {
+              html += '<option value="'+data['data'][i].id+'">'+data['data'][i].cate_name+'</option>';
+            }
+          }
+        });
+      html += '</select>';
+      $(o).after(html);
+    }
   </script>
 </body>
 
