@@ -15,7 +15,162 @@ class Product extends Base
     //  添加产品
     public function getPinsert()
     {
-        return view('product/product/insert');
+        //  取出一级分类
+        $cat1_id = \Db::table('category')->where('parent_id',0)->select();
+        //  取出品牌
+        $brand = \Db::table('brand')->field('id,brand_name')->select();
+        return view('product/product/insert',[
+            'cat1_id'=>$cat1_id,
+            'brand'=>$brand
+        ]);
+    }
+
+    //  处理添加产品
+    public function postPAdd()
+    {
+        // echo '<pre>';
+        // var_dump($_POST);
+        $goodsData = [
+            'goods_name'=>$_POST['goods_name'],
+            'goods_desc'=>$_POST['goods_desc'],
+            'is_sale'=>$_POST['is_sale'],
+            'brand_id'=>$_POST['brand_id'],
+            'category_id'=>'-'.$_POST['cat1_id'].'-'.$_POST['cat2_id'].'-'.$_POST['cat3_id'].'-'
+        ];
+        $goodsId = \Db::table('goods')->insertGetId($goodsData);
+        //    更新spu表
+        $spuData = ['goods_id'=>$goodsId];
+        $spuId = \Db::table('goods_spu')->insertGetId($spuData);
+        //    添加sku属性
+        $key = explode(',',$_POST['goodsAttrKey']);
+        $value = explode(',',$_POST['goodsAttrValue']);
+        $length = explode(',',$_POST['goodsAttrLength']);
+        //  对其数组进行截取
+        foreach($length as $k=>$v)
+        {
+            $sum = 0;
+            for($i=0;$i<$k;$i++)
+            {
+                $sum += $length[$i];
+            }
+            $attrValue[] = array_slice($value,$sum,$v);
+        }
+        // echo "key<br>";
+        // var_dump($key);
+        // echo "value<br>";
+        // var_dump($value);
+        foreach($key as $k=>$v)
+        {
+            $attrData = [
+                'sku_name'=>$v,
+                'spu_id'=>$spuId
+            ];
+            $attrkey[$k][] = \Db::table('goods_skuattr')->insertGetId($attrData);
+            array_push($attrkey[$k],$v);
+        }
+        foreach($attrValue as $k=>$v)
+        {
+            foreach($v as $k1=>$v1)
+            {
+                $valueData = ['sku_value'=>$v1,'attr_id'=>$attrkey[$k][0]];
+                $skuValue[$k][$k1][] = \Db::table('goods_skuvalue')->insertGetId($valueData);
+                array_push($skuValue[$k][$k1],$v1);
+            }
+        }
+        // echo "attrkey</br>";
+        // var_dump($attrkey);
+        // echo "skuvalue</br>";
+        // var_dump($skuValue);
+        //   将其根据|分割
+        $attr_key = [];
+        $attr_value = [];
+        foreach($_POST['attr_name'] as $k=>$v){
+            $data = explode("|",$v);
+            $attr_key = explode(":",$data[0]);
+            $attr_value[] = explode(":",$data[1]);
+        }
+        // echo "attr_key<br>";
+        // var_dump($attr_key);
+        // echo "attr_value<br>";
+        // var_dump($attr_value);
+        foreach($_POST['attr_name'] as $k=>$v)   //012
+        {
+            $path = [];
+            foreach($skuValue as $k1=>$v1)     //  01
+            {
+                foreach($v1 as $k2=>$v2)   //  01
+                {
+                    // var_dump($v2[1].'-----'.$k2);
+                    // var_dump($attr_value[$k][$k1]);
+
+                    if($v2[1] == $attr_value[$k][$k1])
+                    {
+                        // var_dump('23');
+                        $path[] = $attrkey[$k1][0].':'.$v2[0];
+                    }
+                }
+            }
+            //  将数组转成字符串
+            $path = implode('|',$path);
+            \Db::table('goods_sku')
+                ->data([
+                    'sku_path'=>$path,
+                    'stock'=>$_POST['stock'][$k],
+                    'price'=>$_POST['price'][$k]
+                ])
+                ->insert();
+        }
+        
+        //  根据隐藏域传递的路径取出文件
+        $oldFile = Env::get('root_path').'public'.$_POST['image'];
+        $newFile = Env::get('root_path').'public/static/upload/goods/'.date('Ymd').'/';
+        if(!is_dir(Env::get('root_path').'public/static/upload/goods/'.date('Ymd')))
+        {
+            mkdir(Env::get('root_path').'public/static/upload/goods/'.date('Ymd'),0777,true);
+        }
+        foreach(scandir($oldFile) as $k=>$v)
+        {
+            if($k>1)
+            {
+                if(copy($oldFile.'/'.$v,$newFile.$v))
+                {
+                    // 82*82    142*142   220*282
+                    //   打开图像文件进行操作
+                    $image = \think\Image::open($newFile.$v);
+                    $image->thumb(82,82,\think\Image::THUMB_CENTER)->save($newFile.'sm_'.$v);
+                    $image->thumb(142,142,\think\Image::THUMB_CENTER)->save($newFile.'md_'.$v);
+                    $image->thumb(220,282,\think\Image::THUMB_CENTER)->save($newFile.'big_'.$v);
+                    unlink($oldFile.'/'.$v);
+                    \Db::table('goods_image')
+                        ->data([
+                            'spu_id'=>$spuId,
+                            'path'=>'/static/upload/goods/'.date('Ymd').'/'.$v,
+                            'big_path'=>'/static/upload/goods/'.date('Ymd').'/big_'.$v,
+                            'md_path'=>'/static/upload/goods/'.date('Ymd').'/md_'.$v,
+                            'xs_path'=>'/static/upload/goods/'.date('Ymd').'/sm_'.$v,
+                        ])
+                        ->insert();
+                }
+            }
+        }
+        $this->redirect('/product/index');
+    }
+
+    public function postImage()
+    {
+        $files = request()->file('file');
+        if(!is_dir(Env::get('root_path').'public/static/tmp/'.session('id')))
+        {
+            mkdir(Env::get('root_path').'public/static/tmp/'.session('id'),0777,true);
+        }
+        $info = $files->rule('uniqid')->move(Env::get('root_path').'public/static/tmp/'.session('id'));
+        if($info)
+        {
+            $info->getSaveName();
+        }
+        echo json_encode([
+            'path'=>'/static/tmp/'.session('id'),
+        ]);
     }
 
     //  分类列表
@@ -114,9 +269,6 @@ class Product extends Base
                         ->select();
         //  获取出当id的数据
         $data = \Db::table('category')->where('id',$_GET['id'])->find();
-        // echo '<pre>';
-        // var_dump($data);
-        // var_dump($cat1_id);
         return view('product/category/edit',[
             'cat1_id'=>$cat1_id,
             'data'=>$data
@@ -163,9 +315,17 @@ class Product extends Base
         }
         $data = $data->paginate(1,false,['query'=>request()->param()]);
         $page = $data->render();
+
+        //   取出国内产品和国外产品的数量/  总数
+        $count = \Db::table('brand')->field('count(*) count')->find();
+        $inCount = \Db::table('brand')->field('count(*) count')->where('brand_type','1')->find(); 
+        $outCount = \Db::table('brand')->field('count(*) count')->where('brand_type','0')->find(); 
         return view('product/brand/index',[
             'data'=>$data,
-            'page'=>$page
+            'page'=>$page,
+            'count'=>$count,
+            'inCount'=>$inCount,
+            'outCount'=>$outCount,
         ]);
     }
 

@@ -35,19 +35,22 @@ class Base extends Controller
             $data = \Db::table('privilege')
                     ->where('url','like','%'.$url.'%')
                     ->find();
-            
-            //  编辑，删除
-            if(isset($params))
-            {
-                // $this->Edit_Delete($params,$data,$role_name['role_name']);
-            }
+         
 
             //  新建
             //   判断其路径中是否存在，insert /  add  等字符串
             if(stripos($url,'insert'))
             {
                 // $this->insert($data,$role_name['role_name']);
+                return false;
             }
+            else if(isset($params))
+            {
+                //  编辑，删除
+                // $this->Edit_Delete($params,$data,$role_name['role_name']);
+                return false;
+            }
+
         }
     }
 
@@ -57,7 +60,7 @@ class Base extends Controller
         //   判断其是否会有下一步操作
         $urlAfterPart = explode(',',$data['url']);
         $path_info = ltrim($_SERVER['PATH_INFO'],'/');
-        if($path_info == $urlAfterPart)
+        if($path_info == $urlAfterPart[1])
         {
             \Db::table('admin_logs')
                 ->data([
@@ -81,7 +84,7 @@ class Base extends Controller
                     'behavior_type_id'=>$data['id'],
                     'behavior_type_name'=>$data['pri_name'],
                     'behavior_type_path'=>$data['path'],
-                    'practive'=>$_POST
+                    'practive'=>$data['pri_name']
                 ])
                 ->insert();
         }

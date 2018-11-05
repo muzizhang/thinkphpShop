@@ -20,7 +20,8 @@
         "topthink/framework": "5.1.*",
         "flc/dysms": "^1.0",
         "swiftmailer/swiftmailer": "^6.1",
-        "topthink/think-captcha": "^2.0"
+        "topthink/think-captcha": "^2.0",
+        "topthink/think-image": "^1.0"
     },
     "autoload": {
         "psr-4": {

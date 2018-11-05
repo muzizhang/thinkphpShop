@@ -46,7 +46,116 @@
 
 `商品信息表`
 字段
-    id，商品名称，商品描述，商品属性_id，spu_id，是否上架，品牌id，分类id，浏览量
+    id，商品名称，商品描述，商品属性_id，是否上架，品牌id，分类id，浏览量，创建时间
+
+drop table if exists goods;
+create table goods
+(
+    id int unsigned not null auto_increment comment 'ID',
+    goods_name VARCHAR(255) not null comment '商品名称',
+    goods_desc VARCHAR(255) not null comment '商品描述',
+    is_sale int unsigned not null default 1 comment '是否上架[0：下架   1：上架]',
+    brand_id int unsigned not null comment '品牌id',
+    category_id VARCHAR(255) not null comment '分类id',
+    display int unsigned not null default 0 comment '浏览量', 
+    created_at DATETIME default current_timestamp not null comment '创建时间',
+    primary key (id)
+)engine="InnoDB" comment="商品信息表";
+
+`商品spu表`
+字段
+    spu_id，商品id，创建时间
+
+drop table if exists goods_spu;
+create table goods_spu
+(
+    spu_id int unsigned not null auto_increment comment "spuid",
+    goods_id int unsigned not null comment '商品id',
+    created_at DATETIME default current_timestamp not null comment '创建时间',
+    primary key (spu_id)
+)engine="InnoDB" comment="商品spu表";
+
+-- `商品属性表`
+-- 字段
+--     id，属性名称，属性值，spu_id
+
+-- drop table if exists goods_attr;
+-- create table goods_attr
+-- (
+--     id int unsigned not null auto_increment comment 'ID',
+--     spu_id int unsigned not null comment 'spu_id',
+--     attr_name VARCHAR(255) not null comment '属性名称',
+--     attr_value VARCHAR(255) not null comment '属性值',
+--     primary key (id)
+-- )engine="InnoDB" comment="商品属性表";
+
+`商品图片表`
+字段
+    id，spu_id，path（OSS），big_path，md_path，xs_path，创建时间，
+
+drop table if exists goods_image;
+create table goods_image
+(
+    id int unsigned not null auto_increment comment 'ID',
+    spu_id int unsigned not null comment 'spu_id',
+    path VARCHAR(255) not null comment '图片路径',
+    big_path VARCHAR(255) not null comment 'big_path',
+    md_path VARCHAR(255) not null comment 'md_path',
+    xs_path VARCHAR(255) not null comment 'xs_path',
+    created_at DATETIME default current_timestamp not null comment '创建时间',
+    primary key (id)
+)engine="InnoDB" comment="商品图片表";
+
+`商品sku属性表`
+字段
+    id，sku名称，spu_id
+    1    颜色      1
+    2    内存      1
+
+drop table if exists goods_skuAttr;
+create table goods_skuAttr
+(
+    id int unsigned not null auto_increment comment 'ID',
+    sku_name VARCHAR(255) not null comment 'sku名称',
+    spu_id int unsigned not null comment 'spu_id',
+    primary key (id)
+)engine="InnoDB" comment="商品sku属性表";
+
+****`商品sku中间表`
+字段
+    id，sku_path，库存量，价格，添加时间
+    1     1:1|2:3
+
+drop table if exists goods_sku;
+create table goods_sku
+(
+    id int unsigned not null auto_increment comment 'ID',
+    sku_path VARCHAR(255) not null comment 'sku_path',
+    stock int unsigned not null comment '库存量',
+    price decimal(10,2) not null comment '价格',
+    created_at DATETIME DEFAULT current_timestamp not null comment '创建时间',
+    primary key (id)
+)engine='InnoDB' comment='商品sku中间表';
+
+`商品sku属性值`
+字段
+    id，sku值，attr_id
+    1    白色     1
+    2    黑色     1 
+    3    4G       2
+    4    64G      2
+
+drop table if exists goods_skuValue;
+create table goods_skuValue
+(
+    id int unsigned not null auto_increment comment 'ID',
+    sku_value VARCHAR(255) not null comment 'sku值',
+    attr_id int unsigned not null comment '商品属性id',
+    primary key (id)
+)engine="InnoDB" comment="商品sku属性值表";
+
+
+
 
 `商品分类表`
 字段
@@ -62,39 +171,39 @@ create table category
     primary key (id)
 )engine='InnoDB' comment='商品分类表';
 
-INSERT INTO category(id,cate_name,parent_id,path) VALUES
-    (1,'家用电器',0,'-'),
-        (2,'电视',1,'-1-'),
-            (3,'曲面电视',2,'-1-2-'),
-            (4,'超薄电视',2,'-1-2-'),
-            (5,'OLED电视',2,'-1-2-'),
-            (6,'4k超清电视',2,'-1-2-'),
-        (7,'冰箱',1,'-1-'),
-            (8,'多门',7,'-1-7-'),
-            (9,'对开门',7,'-1-7-'),
-            (10,'酒柜',7,'-1-7-'),
-            (11,'双门',7,'-1-7-'),
-        (12,'空调',1,'-1-'),
-            (13,'柜式空调',12,'-1-12-'),
-            (14,'中央空调',12,'-1-12-'),
-            (15,'变频空调',12,'-1-12-'),
-            (16,'壁挂式空调',12,'-1-12-'),
-        (17,'洗衣机',1,'-1-'),
-            (18,'滚筒洗衣机',17,'-1-17-'),
-            (19,'洗烘一体机',17,'-1-17-'),
-            (20,'波轮洗衣机',17,'-1-17-'),
-            (21,'迷你洗衣机',17,'-1-17-'),
-    (22,'手机',0,'-'),
-        (23,'手机通讯',22,'-22-'),
-            (24,'手机',23,'-22-23-'),
-            (25,'游戏手机',23,'-22-23-'),
-            (26,'老人机',23,'-22-23-'),
-            (27,'对讲机',23,'-22-23-'),
-        (28,'手机配件',22,'-22-'),
-            (29,'手机壳',28,'-22-28-'),
-            (30,'贴膜',28,'-22-28-'),
-            (31,'移动电源',28,'-22-28-'),
-            (32,'数据线',28,'-22-28-');
+-- INSERT INTO category(id,cate_name,parent_id,path) VALUES
+--     (1,'家用电器',0,'-'),
+--         (2,'电视',1,'-1-'),
+--             (3,'曲面电视',2,'-1-2-'),
+--             (4,'超薄电视',2,'-1-2-'),
+--             (5,'OLED电视',2,'-1-2-'),
+--             (6,'4k超清电视',2,'-1-2-'),
+--         (7,'冰箱',1,'-1-'),
+--             (8,'多门',7,'-1-7-'),
+--             (9,'对开门',7,'-1-7-'),
+--             (10,'酒柜',7,'-1-7-'),
+--             (11,'双门',7,'-1-7-'),
+--         (12,'空调',1,'-1-'),
+--             (13,'柜式空调',12,'-1-12-'),
+--             (14,'中央空调',12,'-1-12-'),
+--             (15,'变频空调',12,'-1-12-'),
+--             (16,'壁挂式空调',12,'-1-12-'),
+--         (17,'洗衣机',1,'-1-'),
+--             (18,'滚筒洗衣机',17,'-1-17-'),
+--             (19,'洗烘一体机',17,'-1-17-'),
+--             (20,'波轮洗衣机',17,'-1-17-'),
+--             (21,'迷你洗衣机',17,'-1-17-'),
+--     (22,'手机',0,'-'),
+--         (23,'手机通讯',22,'-22-'),
+--             (24,'手机',23,'-22-23-'),
+--             (25,'游戏手机',23,'-22-23-'),
+--             (26,'老人机',23,'-22-23-'),
+--             (27,'对讲机',23,'-22-23-'),
+--         (28,'手机配件',22,'-22-'),
+--             (29,'手机壳',28,'-22-28-'),
+--             (30,'贴膜',28,'-22-28-'),
+--             (31,'移动电源',28,'-22-28-'),
+--             (32,'数据线',28,'-22-28-');
 
 `品牌表`
 字段
@@ -113,32 +222,6 @@ create table brand
     PRIMARY key (id)
 )engine='InnoDB' comment='品牌表';
 
-`商品属性表`
-字段
-    id，属性名称，属性值，spu_id
-
-`商品图片表`
-字段
-    id，spu_id，path（OSS），图片描述，big_path，md_path，xs_path
-
-`商品sku属性表`
-字段
-    id，sku名称，spu_id
-    1    颜色      1
-    2    内存      1
-
-****`商品sku中间表`
-字段
-    id，sku_path，库存量，价格  
-    1     1:1|2:3
-
-`商品sku属性值`
-字段
-    id，sku值，attr_id
-    1    白色     1
-    2    黑色     1 
-    3    4G       2
-    4    64G      2
 
 
 `管理员登录表`
