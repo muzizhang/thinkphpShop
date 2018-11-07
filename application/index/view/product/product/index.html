@@ -38,20 +38,35 @@
     <div class=" page-content clearfix">
         <div id="products_style">
             <div class="search_style">
-
-                <ul class="search_content clearfix">
-                    <li><label class="l_f">产品名称</label><input name="" type="text" class="text_add" placeholder="输入品牌名称"
-                            style=" width:250px" /></li>
-                    <li><label class="l_f">添加时间</label><input class="inline laydate-icon" id="start" style=" margin-left:10px;"></li>
-                    <li style="width:90px;"><button type="button" class="btn_search"><i class="icon-search"></i>查询</button></li>
-                </ul>
+                <form>
+                    <ul class="search_content clearfix">
+                        <li>
+                            <label class="l_f">产品名称</label>
+                            <input name="name" type="text" class="text_add" placeholder="输入品牌名称" value="<?=@$_GET['name']?>" style="width:250px" />
+                        </li>
+                        <li>
+                            <label class="l_f">添加时间</label>
+                            <input name="start" class="inline laydate-icon" value="<?=@$_GET['start']?>" id="start" style="margin-left:10px;">
+                        </li>
+                        <li>
+                            <label class="l_f">是否上架</label>&nbsp;&nbsp;&nbsp;
+                            <input type="radio" name="is_sale" value="1" id="" {if(@$_GET['is_sale'] == 1) } checked {/if}>上架&nbsp;&nbsp;&nbsp;
+                            <input type="radio" name="is_sale" value="0" id="" {if(@$_GET['is_sale'] == 0) } checked {/if}>下架
+                        </li>
+                        <li style="width:90px;">
+                            <button type="submit" class="btn_search">
+                                <i class="icon-search"></i>
+                                查询
+                            </button>
+                        </li>
+                    </ul>
+                </form>
             </div>
             <div class="border clearfix">
                 <span class="l_f">
                     <a href="/product/pinsert" title="添加商品" class="btn btn-warning Order_form"><i class="icon-plus"></i>添加商品</a>
                     <a href="javascript:ovid()" class="btn btn-danger"><i class="icon-trash"></i>批量删除</a>
                 </span>
-                <span class="r_f">共：<b>2334</b>件商品</span>
             </div>
             <!--产品列表展示-->
             <div class="h_products_list clearfix" id="products_list">
@@ -78,38 +93,53 @@
                                 <th width="25px"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
                                 <th width="80px">产品编号</th>
                                 <th width="250px">产品名称</th>
-                                <th width="100px">原价格</th>
-                                <th width="100px">现价</th>
-                                <th width="100px">所属地区/国家</th>
-                                <th width="180px">加入时间</th>
-                                <th width="80px">审核状态</th>
+                                <th width="100px">产品描述</th>
+                                <th width="100px">品牌ID</th>
+                                <th width="100px">分类ID</th>
+                                <th width="180px">浏览量</th>
+                                <th width="80px">创建时间</th>
                                 <th width="70px">状态</th>
                                 <th width="200px">操作</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td width="25px"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></td>
-                                <td width="80px">45631</td>
-                                <td width="250px"><u style="cursor:pointer" class="text-primary" onclick="">小米 Max 全网通
-                                        高配版 3GB内存 64GB ROM 金色 移动联通电信4G手机Y</u></td>
-                                <td width="100px">5467</td>
-                                <td width="100px">4525</td>
-                                <td width="100px">法国</td>
-                                <td width="180px">2014-6-11 11:11:42</td>
-                                <td class="text-l">通过</td>
-                                <td class="td-status"><span class="label label-success radius">已启用</span></td>
-                                <td class="td-manage">
-                                    <a onClick="member_stop(this,'10001')" href="javascript:;" title="停用" class="btn btn-xs btn-success"><i
-                                            class="icon-ok bigger-120"></i></a>
-                                    <a title="编辑" onclick="member_edit('编辑','member-add.html','4','','510')" href="javascript:;"
-                                        class="btn btn-xs btn-info"><i class="icon-edit bigger-120"></i></a>
-                                    <a title="删除" href="javascript:;" onclick="member_del(this,'1')" class="btn btn-xs btn-warning"><i
-                                            class="icon-trash  bigger-120"></i></a>
-                                </td>
-                            </tr>
+                            {foreach $data as $v}
+                                <tr>
+                                    <td width="25px">
+                                        <label>
+                                            <input type="checkbox" class="ace" value="{$v['id']}">
+                                            <span class="lbl"></span>
+                                        </label>
+                                    </td>
+                                    <td width="80px">{$v['id']}</td>
+                                    <td width="250px">
+                                        <u style="cursor:pointer" class="text-primary" onclick="">
+                                            {$v['goods_name']}
+                                        </u>
+                                    </td>
+                                    <td width="100px">{$v['goods_desc']}</td>
+                                    <td width="100px">{$v['brand_id']}</td>
+                                    <td width="100px">{$v['category_id']}</td>
+                                    <td width="180px">{$v['created_at']}</td>
+                                    <td class="text-l">{if($v['is_sale'] == 0)} 下架 {elseif($v['is_sale'] == 1)/} 上架 {/if}</td>
+                                    <td class="td-status">
+                                        <span class="label label-success radius">已启用</span>
+                                    </td>
+                                    <td class="td-manage">
+                                        <a onClick="member_stop(this,'10001')" href="javascript:;" title="停用" class="btn btn-xs btn-success"><i
+                                                class="icon-ok bigger-120"></i></a>
+                                        <a title="编辑" href="/product/Edit?id={$v['id']}" class="btn btn-xs btn-info">
+                                            <i class="icon-edit bigger-120"></i>
+                                        </a>
+                                        <a title="删除" href="/product/delete?id={$v['id']}" onclick="return confirm('确定删除么？');" class="btn btn-xs btn-warning">
+                                            <i class="icon-trash  bigger-120"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {/foreach}
                         </tbody>
                     </table>
+                    <div style="text-align: center;">{$page|raw}</div>
                 </div>
             </div>
         </div>
@@ -118,42 +148,6 @@
 
 </html>
 <script>
-    jQuery(function ($) {
-        var oTable1 = $('#sample-table').dataTable({
-            "aaSorting": [[1, "desc"]],//默认第几个排序
-            "bStateSave": true,//状态保存
-            "aoColumnDefs": [
-                //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
-                { "orderable": false, "aTargets": [0, 2, 3, 4, 5, 8, 9] }// 制定列不参与排序
-            ]
-        });
-
-
-        $('table th input:checkbox').on('click', function () {
-            var that = this;
-            $(this).closest('table').find('tr > td:first-child input:checkbox')
-                .each(function () {
-                    this.checked = that.checked;
-                    $(this).closest('tr').toggleClass('selected');
-                });
-
-        });
-
-
-        $('[data-rel="tooltip"]').tooltip({ placement: tooltip_placement });
-        function tooltip_placement(context, source) {
-            var $source = $(source);
-            var $parent = $source.closest('table')
-            var off1 = $parent.offset();
-            var w1 = $parent.width();
-
-            var off2 = $source.offset();
-            var w2 = $source.width();
-
-            if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
-            return 'left';
-        }
-    });
     laydate({
         elem: '#start',
         event: 'focus'
@@ -276,32 +270,4 @@
             layer.msg('已启用!', { icon: 6, time: 1000 });
         });
     }
-    /*产品-编辑*/
-    function member_edit(title, url, id, w, h) {
-        layer_show(title, url, w, h);
-    }
-
-    /*产品-删除*/
-    function member_del(obj, id) {
-        layer.confirm('确认要删除吗？', function (index) {
-            $(obj).parents("tr").remove();
-            layer.msg('已删除!', { icon: 1, time: 1000 });
-        });
-    }
-    //面包屑返回值
-    var index = parent.layer.getFrameIndex(window.name);
-    parent.layer.iframeAuto(index);
-    $('.Order_form').on('click', function () {
-        var cname = $(this).attr("title");
-        var chref = $(this).attr("href");
-        var cnames = parent.$('.Current_page').html();
-        var herf = parent.$("#iframe").attr("src");
-        parent.$('#parentIframe').html(cname);
-        parent.$('#iframe').attr("src", chref).ready();;
-        parent.$('#parentIframe').css("display", "inline-block");
-        parent.$('.Current_page').attr({ "name": herf, "href": "javascript:void(0)" }).css({ "color": "#4c8fbd", "cursor": "pointer" });
-        //parent.$('.Current_page').html("<a href='javascript:void(0)' name="+herf+" class='iframeurl'>" + cnames + "</a>");
-        parent.layer.close(index);
-
-    });
 </script>

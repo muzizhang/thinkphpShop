@@ -9,7 +9,31 @@ class Product extends Base
     //  产品列表页
     public function getindex()
     {
-        return view('product/product/index');
+        //  取出所有数据
+        $data = \Db::table('goods')
+                    ->where(1,1);
+        if(isset($_GET['name']) && $_GET['name'] != '')
+        {
+            $data = $data->where('goods_name','like','%'.$_GET['name'].'%')
+                         ->whereor('goods_desc','like','%'.$_GET['name'].'%');
+        }
+
+        if(isset($_GET['start']) && $_GET['start'] != '')
+        {
+            $data = $data->where('created_at','>',$_GET['start']);
+        }
+
+        if(isset($_GET['is_sale']) && $_GET['is_sale'] != '')
+        {
+            $data = $data->where('is_sale',$_GET['is_sale']);
+        }
+
+        $data = $data->paginate(1,false,['query'=>request()->param()]);
+        $page = $data->render();
+        return view('product/product/index',[
+            'data'=>$data,
+            'page'=>$page
+        ]);
     }
 
     //  添加产品
@@ -28,8 +52,6 @@ class Product extends Base
     //  处理添加产品
     public function postPAdd()
     {
-        // echo '<pre>';
-        // var_dump($_POST);
         $goodsData = [
             'goods_name'=>$_POST['goods_name'],
             'goods_desc'=>$_POST['goods_desc'],
@@ -55,10 +77,6 @@ class Product extends Base
             }
             $attrValue[] = array_slice($value,$sum,$v);
         }
-        // echo "key<br>";
-        // var_dump($key);
-        // echo "value<br>";
-        // var_dump($value);
         foreach($key as $k=>$v)
         {
             $attrData = [
@@ -77,10 +95,6 @@ class Product extends Base
                 array_push($skuValue[$k][$k1],$v1);
             }
         }
-        // echo "attrkey</br>";
-        // var_dump($attrkey);
-        // echo "skuvalue</br>";
-        // var_dump($skuValue);
         //   将其根据|分割
         $attr_key = [];
         $attr_value = [];
@@ -89,10 +103,6 @@ class Product extends Base
             $attr_key = explode(":",$data[0]);
             $attr_value[] = explode(":",$data[1]);
         }
-        // echo "attr_key<br>";
-        // var_dump($attr_key);
-        // echo "attr_value<br>";
-        // var_dump($attr_value);
         foreach($_POST['attr_name'] as $k=>$v)   //012
         {
             $path = [];
@@ -100,12 +110,8 @@ class Product extends Base
             {
                 foreach($v1 as $k2=>$v2)   //  01
                 {
-                    // var_dump($v2[1].'-----'.$k2);
-                    // var_dump($attr_value[$k][$k1]);
-
                     if($v2[1] == $attr_value[$k][$k1])
                     {
-                        // var_dump('23');
                         $path[] = $attrkey[$k1][0].':'.$v2[0];
                     }
                 }
@@ -116,7 +122,8 @@ class Product extends Base
                 ->data([
                     'sku_path'=>$path,
                     'stock'=>$_POST['stock'][$k],
-                    'price'=>$_POST['price'][$k]
+                    'price'=>$_POST['price'][$k],
+                    'spu_id'=>$spuId
                 ])
                 ->insert();
         }
@@ -155,7 +162,7 @@ class Product extends Base
         }
         $this->redirect('/product/index');
     }
-
+    //  上传图片
     public function postImage()
     {
         $files = request()->file('file');
@@ -172,6 +179,180 @@ class Product extends Base
             'path'=>'/static/tmp/'.session('id'),
         ]);
     }
+    //  编辑商品
+    public function getEdit()
+    {
+        echo '<pre>';
+        //  根据id，取出对应商品的信息
+        $data = \Db::table('goods')->where('id',$_GET['id'])->find();
+        // var_dump($data);
+        $category = explode('-',$data['category_id']);
+        $category = array_slice($category,1,-1);
+        //  取出spu_id
+        $spu_id = \Db::table('goods_spu')
+                        ->where('goods_id',$_GET['id'])
+                        ->field('spu_id')
+                        ->find();
+        //  取出图片
+        $image = \Db::table('goods_image')
+                    ->where('spu_id',$spu_id['spu_id'])
+                    ->select();
+        //  取出对应的属性
+        $attr = \Db::table('goods_skuattr')
+                    ->where('spu_id',$spu_id['spu_id'])
+                    ->select();
+        //  取出属性值
+        $value = \Db::table('goods_skuattr')
+                    ->alias('gs')
+                    ->join('goods_skuvalue gsv','gs.id = gsv.attr_id')
+                    ->where('gs.spu_id',$spu_id['spu_id'])
+                    ->field('gs.id,gs.sku_name,gsv.id value_id,gsv.sku_value')
+                    ->select();
+        //   取出全局属性
+        $attr_key = \Db::table('goods_skuattr')
+                        ->where('spu_id',$spu_id['spu_id'])
+                        ->field('GROUP_CONCAT(sku_name) sku_name,GROUP_CONCAT(id) id')
+                        ->group('spu_id')
+                        ->find();
+        //  取出全局属性值
+        $attr_value = \Db::table('goods_skuattr')
+                            ->alias('gs')
+                            ->join('goods_skuvalue gsv','gs.id = gsv.attr_id')
+                            ->where('gs.spu_id',$spu_id['spu_id'])
+                            ->field('gs.sku_name,gs.id,GROUP_CONCAT(gsv.sku_value) sku_value,GROUP_CONCAT(gsv.id) value_id')
+                            ->group('gsv.attr_id')
+                            ->select();
+        //  修改sku
+        foreach($attr_value as $k=>$v)
+        {
+            $sku_attrkey[$k][] = $v['sku_name'];
+            $sku_attrkey[$k][] = $v['id'];
+            $sku_attrValue[$k][] = explode(',',$v['sku_value']);
+            $sku_attrValue[$k][] = explode(',',$v['value_id']);
+        }
+        echo "sku_attrkey<br>";
+        var_dump($sku_attrkey);
+        echo "sku_attrValue<br>";
+        var_dump($sku_attrValue);
+        //  拼接全局变量
+        foreach($attr_value as $v)
+        {
+            $length[] = sizeof(explode(',',$v['sku_value']));
+            $attrValue[] = $v['sku_value'];
+            $attrValue_id[] = $v['value_id'];
+        }
+        $attrValue = implode($attrValue,',');
+        $attrValue_id = implode($attrValue_id,',');
+        $length = implode($length,',');
+        //  取出sku
+        $sku = \Db::table('goods_sku')
+                    ->where('spu_id',$spu_id['spu_id'])
+                    ->select();
+        // echo "sku<br>";
+        // var_dump($sku);
+        //  拼接sku属性，属性值
+        foreach($sku as $k=>$v)
+        {
+            $i = explode('|',$v['sku_path']);
+            foreach($i as $k1=>$v1)
+            {
+                $sku_path[$k][] = explode(':',$v1);
+            }
+        }
+        echo "sku_path<br>";
+        var_dump($sku_path);
+        foreach($sku_path as $k=>$v)
+        {
+            foreach($v as $k1=>$v1)
+            {
+                foreach($sku_attrValue[$k1][1] as $k2=>$v2)
+                {
+                    if($v1[$k1] == $sku_attrkey[$k1][1] && $v1[1] == $v2)
+                    {
+                        $path[] = $sku_attrkey[$k1][0].":".$sku_attrValue[$k1][0][$k2];
+                    }
+                }
+            }
+        }
+        echo "path<br>";
+        var_dump($path);
+        //  取出一级分类
+        $cat1_id = \Db::table('category')->where('parent_id',0)->select();
+        //  取出品牌
+        $brand = \Db::table('brand')->field('id,brand_name')->select();
+        return view('/product/product/edit',[
+            'cat1_id'=>$cat1_id,
+            'brand'=>$brand,
+            'data'=>$data,
+            'category'=>$category,
+            'image'=>$image,
+            'sku'=>$sku,
+            'attr'=>$attr,
+            'value'=>$value,
+            'attr_key'=>$attr_key,
+            'attrValue'=>$attrValue,
+            'length'=>$length,
+            'attrValue_id'=>$attrValue_id,
+        ]);
+    }
+
+    //  删除商品
+    public function getDelete()
+    {
+        //  根据商品id，删除相应的数据
+        //  取出spu_id
+        $spu_id = \Db::table('goods_spu')
+                        ->where('goods_id',$_GET['id'])
+                        ->field('spu_id')
+                        ->find();
+        //  取出属性id
+        $attr = \Db::table('goods_skuattr')
+                    ->where('spu_id',$spu_id['spu_id'])
+                    ->field('id')
+                    ->select();
+        //  删除sku属性值
+        foreach($attr as $k=>$v)
+        {
+            \Db::table('goods_skuvalue')
+                ->where('attr_id',$v['id'])
+                ->delete();
+        }
+        //  删除sku属性
+        \Db::table('goods_skuattr')
+            ->where('spu_id',$spu_id['spu_id'])
+            ->delete();
+
+        // 删除sku
+        \Db::table('goods_sku')
+            ->where('spu_id',$spu_id['spu_id'])
+            ->delete();
+
+        //  删除商品图片
+        $img = \Db::table('goods_image')
+                    ->where('spu_id',$spu_id['spu_id'])
+                    ->select();
+        foreach($img as $v)
+        {
+            unlink(Env::get('root_path').'public'.$v['path']);
+            unlink(Env::get('root_path').'public'.$v['big_path']);
+            unlink(Env::get('root_path').'public'.$v['md_path']);
+            unlink(Env::get('root_path').'public'.$v['xs_path']);
+        }
+        \Db::table('goods_image')
+            ->where('spu_id',$spu_id['spu_id'])
+            ->delete();
+        //  删除spu
+        \Db::table('goods_spu')
+            ->where('goods_id',$_GET['id'])
+            ->delete();
+
+        //  删除商品信息
+        \Db::table('goods')
+            ->where('id',$_GET['id'])
+            ->delete();
+        
+        $this->redirect('/product/index');
+     }
 
     //  分类列表
     public function getCategory()
@@ -353,7 +534,7 @@ class Product extends Base
             \Db::table('brand')
                 ->data([
                     'brand_name'=>$_POST['brand_name'],
-                    'brand_LOGO'=>'/upload/'.$info->getSaveName(),
+                    'brand_LOGO'=>'/static/upload/'.$info->getSaveName(),
                     'brand_type'=>$_POST['type'],
                     'link'=>$_POST['brand_link'],
                     'description'=>$_POST['brand_desc']
@@ -387,7 +568,7 @@ class Product extends Base
                     ->where('id',$_GET['id'])
                     ->field('brand_LOGO')
                     ->find();
-        unlink(Env::get('root_path').'/public/static'.$img['brand_LOGO']);
+        unlink(Env::get('root_path').'/public'.$img['brand_LOGO']);
         // 获取表单上传文件 例如上传了001.jpg
         $file = request()->file('image');
         // 移动到框架应用根目录/uploads/ 目录下
@@ -399,13 +580,12 @@ class Product extends Base
                 ->where('id',$_GET['id'])
                 ->data([
                     'brand_name'=>$_POST['brand_name'],
-                    'brand_LOGO'=>'/upload/'.$info->getSaveName(),
+                    'brand_LOGO'=>'/static/upload/'.$info->getSaveName(),
                     'brand_type'=>$_POST['type'],
                     'link'=>$_POST['brand_link'],
                     'description'=>$_POST['brand_desc']
                 ])
                 ->update();
-
             $this->redirect('/product/Brand');
         }else{
             // 上传失败获取错误信息
@@ -421,7 +601,7 @@ class Product extends Base
                     ->where('id',$_GET['id'])
                     ->field('brand_LOGO')
                     ->find();
-        unlink(Env::get('root_path').'/public/static'.$img['brand_LOGO']);
+        unlink(Env::get('root_path').'/public'.$img['brand_LOGO']);
         //  删除数据库中的数据
         \Db::table('brand')->where('id',$_GET['id'])->delete();
         $this->redirect('/product/Brand');

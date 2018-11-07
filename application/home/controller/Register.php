@@ -49,7 +49,7 @@ class Register
             $sendSms->setTemplateParam(['code' => $code]);
             //  执行发送
             $data = $client->execute($sendSms);
-            $_SESSION['code'] = $code;
+            session('code',$code);
             echo json_encode([
                 'message'=>$data->Message,
                 'code'=>$data->Code
@@ -71,7 +71,7 @@ class Register
             ->setTo([$_POST['phone'],$_POST['phone'] => $_POST['phone']])     //  发送对象，数组形式支持多个
             ->setBody('您的验证码为：'.$rand.',该验证码10分钟有效，请勿泄露于他人！')      //  邮件内容
             ;
-            $_SESSION['code'] = $rand;
+            session('code',$rand);
             // Send the message
             $result = $mailer->send($message);     //  发送    成功，返回1   true
             if($result)
@@ -94,7 +94,7 @@ class Register
     //   插入数据
     public function postInfo()
     {
-        if(isset($_POST['code']) && $_POST['code'] == @$_SESSION['code'])
+        if(isset($_POST['code']) && $_POST['code'] == @session('code'))
         {
             //   判断注册账号是邮箱/手机号
             if(preg_match('/^((13[0-9])|(14[5,7,9])|(15[^4])|(18[0-9])|(17[0,1,3,5,6,7,8]))\\d{8}$/',$_POST['phone']))

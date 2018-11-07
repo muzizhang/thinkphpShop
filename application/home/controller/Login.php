@@ -27,8 +27,8 @@ class Login
             );
 
         $status = $GtSdk->pre_process($data, 1);
-        $_SESSION['gtserver'] = $status;
-        $_SESSION['user_id'] = $data['user_id'];
+        session('gtserver',$status);
+        session('home_id',$data['user_id']);
         echo $GtSdk->get_response_str();
     }
 
@@ -37,13 +37,13 @@ class Login
     {
         $GtSdk = new \GeetestLib(CAPTCHA_ID, PRIVATE_KEY);
         $data = array(
-                "user_id" => $_SESSION['user_id'], # 网站用户id
+                "user_id" => session('home_id'), # 网站用户id
                 "client_type" => "web", #web:电脑上的浏览器；h5:手机上的浏览器，包括移动应用内完全内置的web_view；native：通过原生SDK植入APP应用的方式
                 "ip_address" => "127.0.0.1" # 请在此处传输用户请求验证时所携带的IP
             );
 
 
-        if ($_SESSION['gtserver'] == 1) {   //服务器正常
+        if (session('gtserver') == 1) {   //服务器正常
             $result = $GtSdk->success_validate($_POST['geetest_challenge'], $_POST['geetest_validate'], $_POST['geetest_seccode'], $data);
             if ($result) {
                 header('Location: /homeLogin/Validate');
@@ -74,7 +74,7 @@ class Login
             //  查询邮箱
             $user = User::where('email',$_POST['phone'])->find();
         }
-        $_SESSION['phone'] = $_POST['phone'];
+        session('phone',$_POST['phone']);
         $this->getParams($user);
     }
 
@@ -94,13 +94,13 @@ class Login
         $code = rand(100000, 999999);
         $client  = new Client($config);
         $sendSms = new SendSms;
-        $sendSms->setPhoneNumbers($_SESSION['phone']);
+        $sendSms->setPhoneNumbers(session('phone'));
         $sendSms->setSignName('itmuzi');
         $sendSms->setTemplateCode('SMS_147419883');
         $sendSms->setTemplateParam(['code' => $code]);
         //  执行发送
         $data = $client->execute($sendSms);
-        $_SESSION['code'] = $code;
+        session('code',$code);
         echo json_encode([
             'message'=>$data->Message,
             'code'=>$data->Code
@@ -111,9 +111,9 @@ class Login
     public function getPhoneCode()
     {
         $user = 'false';
-        if($_GET['code'] == $_SESSION['code'])
+        if($_GET['code'] == session('code'))
         {
-            $user = User::where('phone',$_SESSION['phone'])->find();
+            $user = User::where('phone',session('phone'))->find();
         }
         $this->getParams($user);
     }
@@ -127,7 +127,7 @@ class Login
     //  修改密码
     public function postSetPassword()
     {
-        $user = User::where('phone',$_SESSION['phone'])->update(['login_pwd'=>md5($_POST['login_pwd'])]);
+        $user = User::where('phone',session('phone'))->update(['login_pwd'=>md5($_POST['login_pwd'])]);
         $this->getParams($user);
     }
 
@@ -146,8 +146,8 @@ class Login
             //  查询邮箱
             $user = User::where('email',$_POST['name'])->where('login_pwd',md5($_POST['password']))->find();
         }
-        $_SESSION['login_name'] = $user['login_name'];
-        $_SESSION['id'] = $user['id'];
+        session('login_name',$user['login_name']);
+        session('home_id',$user['id']);
         $this->getParams($user);
     }
 

@@ -18,12 +18,26 @@
 			<div class="shortcut">
 				<ul class="fl">
 					<li class="f-item">品优购欢迎您！</li>
-					<li class="f-item">请登录　<span><a href="#">免费注册</a></span></li>
+					{if(session('?home_id'))}
+						<li class="f-item">
+							<a href="/homeUser/SetInfo"><?=session('login_name')?></a>
+						</li>
+					{else /}
+						<li class="f-item">
+							请
+							<a href="/homeLogin/index" target="_blank">登录</a>　
+							<span>
+								<a href="/homeRegister/index" target="_blank">免费注册</a>
+							</span>
+						</li>
+					{/if}
 				</ul>
 				<ul class="fr">
-					<li class="f-item">我的订单</li>
+					<li class="f-item"><a href="/homeUser/index" target="_blank">我的订单</a></li>
 					<li class="f-item space"></li>
-					<li class="f-item">我的品优购</li>
+					<li class="f-item">
+						<a href="/homeIndex/index" target="_blank">我的品优购</a>
+					</li>
 					<li class="f-item space"></li>
 					<li class="f-item">品优购会员</li>
 					<li class="f-item space"></li>
@@ -91,7 +105,7 @@
 								<li class="yui3-u-1-8"><span class="sum">8848.00</span></li>
 								<li class="yui3-u-1-8">
 									<a href="#none">删除</a><br />
-									<a href="#none">移到我的关注</a>
+									<a href="/homeUser/Collect">移到我的关注</a>
 								</li>
 							</ul>
 						</div>
@@ -117,7 +131,7 @@
 								<li class="yui3-u-1-8"><span class="sum">8848.00</span></li>
 								<li class="yui3-u-1-8">
 									<a href="#none">删除</a><br />
-									<a href="#none">移到我的关注</a>
+									<a href="/homeUser/Collect">移到我的关注</a>
 								</li>
 							</ul>
 						</div>
@@ -145,7 +159,7 @@
 								<li class="yui3-u-1-8"><span class="sum">8848.00</span></li>
 								<li class="yui3-u-1-8">
 									<a href="#none">删除</a><br />
-									<a href="#none">移到我的关注</a>
+									<a href="/homeUser/Collect">移到我的关注</a>
 								</li>
 							</ul>
 						</div>
@@ -179,7 +193,7 @@
 								<li class="yui3-u-1-8"><span class="sum">8848.00</span></li>
 								<li class="yui3-u-1-8">
 									<a href="#none">删除</a><br />
-									<a href="#none">移到我的关注</a>
+									<a href="/homeUser/Collect">移到我的关注</a>
 								</li>
 							</ul>
 						</div>
@@ -205,7 +219,7 @@
 								<li class="yui3-u-1-8"><span class="sum">8848.00</span></li>
 								<li class="yui3-u-1-8">
 									<a href="#none">删除</a><br />
-									<a href="#none">移到我的关注</a>
+									<a href="/homeUser/Collect">移到我的关注</a>
 								</li>
 							</ul>
 						</div>
@@ -219,7 +233,7 @@
 				</div>
 				<div class="option">
 					<a href="#none">删除选中的商品</a>
-					<a href="#none">移到我的关注</a>
+					<a href="/homeUser/Collect">移到我的关注</a>
 					<a href="#none">清除下柜商品</a>
 				</div>
 				<div class="toolbar">
@@ -229,7 +243,11 @@
 						<span><em>已节省：</em><i>-¥20.00</i></span>
 					</div>
 					<div class="sumbtn">
-						<a class="sum-btn" href="/homeCart/settlement" target="_blank">结算</a>
+						{if(session('?home_id'))}
+						<a class="sum-btn" href="/homeCart/settlement">结算</a>
+						{else /}
+						<a class="sum-btn" href="/homeLogin/index">结算</a>
+						{/if}
 					</div>
 				</div>
 			</div>
@@ -248,8 +266,8 @@
 							<span class="number">1</span>
 						</li>
 						<li class="yui3-u-1-8">
-							<a href="#none">重新购买</a>
-							<a href="#none">移到我的关注</a>
+							<a href="/homeIndex/index">重新购买</a>
+							<a href="/homeUser/Collect">移到我的关注</a>
 						</li>
 					</ul>
 				</div>

@@ -133,6 +133,7 @@ create table goods_sku
     sku_path VARCHAR(255) not null comment 'sku_path',
     stock int unsigned not null comment '库存量',
     price decimal(10,2) not null comment '价格',
+    spu_id int unsigned not null comment 'spu_id',
     created_at DATETIME DEFAULT current_timestamp not null comment '创建时间',
     primary key (id)
 )engine='InnoDB' comment='商品sku中间表';

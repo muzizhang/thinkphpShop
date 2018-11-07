@@ -39,10 +39,13 @@
         li {
             width: 200px;
             display: block;
-            float: left;
+            float: left; 
         }
         li > input {
             margin-left:10px;
+        }
+        ul > li {
+            padding-top: 8px;
         }
         #form-article-add .cl .Add_p_s {
             width:400px;
@@ -60,14 +63,14 @@
                         <span class="c-red">*</span>商品名称：
                     </label>
                     <div class="formControls col-10">
-                        <input type="text" class="input-text" name="goods_name">
+                        <input type="text" class="input-text" value="{$data['goods_name']}" name="goods_name">
                     </div>
                 </div>
                 <div class=" clearfix cl">
                     <label class="form-label col-2">是否上架：</label>
                     <div class="formControls col-10">
-                        <input type="radio" name="is_sale" value="1" checked>上架<br>
-                        <input type="radio" name="is_sale" value="0">下架
+                        <input type="radio" name="is_sale" value="1" {if($data['is_sale'] == 1)} checked {/if} >上架<br>
+                        <input type="radio" name="is_sale" value="0" {if($data['is_sale'] == 0)} checked {/if} >下架
                     </div>
                 </div>
                 <div class="clearfix cl">
@@ -78,7 +81,7 @@
                         <select name="cat1_id" id="">
                             <option value="">请选择</option>
                             {foreach $cat1_id as $v}
-                                <option value="{$v['id']}">{$v['cate_name']}</option>
+                                <option {if($category[0] == $v['id'])} selected {/if} value="{$v['id']}">{$v['cate_name']}</option>
                             {/foreach}
                         </select>
                         <select name="cat2_id" id=""></select>
@@ -93,7 +96,7 @@
                         <select name="brand_id" id="">
                             <option value="">请选择</option>
                             {foreach $brand as $v}
-                            <option value="{$v['id']}">{$v['brand_name']}</option>
+                            <option {if($data['brand_id'] == $v['id'])} selected {/if} value="{$v['id']}">{$v['brand_name']}</option>
                             {/foreach}
                         </select>
                     </div>
@@ -102,13 +105,12 @@
                     <label class="form-label col-2">商品描述：</label>
                     <div class="formControls col-10">
                         <textarea name="goods_desc" cols="" rows="" class="textarea" placeholder="说点什么...最少输入10个字符" datatype="*10-100"
-                            dragonfly="true" nullmsg="备注不能为空！" onKeyUp="textarealength(this,200)"></textarea>
+                            dragonfly="true" nullmsg="备注不能为空！" onKeyUp="textarealength(this,200)">{$data['goods_desc']}</textarea>
                         <p class="textarea-numberbar"><em class="textarea-length">0</em>/200</p>
                     </div>
                 </div>
                 <hr>
                 <!-- 商品sku属性 -->
-                
                 <div class="clearfix cl">
                     <label class="form-label col-2">
                         <span class="c-red">*</span>商品属性：
@@ -117,25 +119,76 @@
                         <input type="text" value="" id="attr_name" placeholder="添加属性">
                         <input type="button" id="sku_attr" class="btn btn-info" value="添加属性">
                         <div id="table" style="width:100%;margin-top: 20px;">
-                            <table style="width:100%;border:1px solid #333;"></table><hr>
+                            <table style="width:100%;border:1px solid #333;">
+                                {foreach $attr as $k=>$v}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="attrClass" value="{$v['id']}">{$v['sku_name']}
+                                    </td>
+                                    <td>
+                                        {foreach $value as $values}
+                                            {if($v['id'] == $values['id'])}
+                                                <li>
+                                                    <input type="radio" name="attr_val{$values['id']}" value="{$values['sku_value']}">{$values['sku_value']}
+                                                </li>
+                                            {/if}
+                                        {/foreach}
+                                        <ul>
+                                            <li>
+                                                <input type="button" onclick="attrValue(this)" class="btn btn-info" value="添加属性值">
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                            </table>
+                            <hr>
+                            <div style="text-align:center;margin-top:10px;">
+                                <input type="button" class="btn btn-warning" onclick="attr_delete(this)" value="删除属性">
+                                <input type="button" onclick="attr_spu(this)" class="btn btn-primary" value="生成一个SKU">
+                            </div>
                         </div>
                     </div>
                 </div>
                 <hr>
-                <div id="spu" class="clearfix cl"></div>
-                <input type="hidden" id="goodsAttrKey" name="goodsAttrKey" value=""/>
-                <input type="hidden" id="goodsAttrValue" name="goodsAttrValue" value=""/>
-                <input type="hidden" id="attrLength" name="goodsAttrLength" value=""/>
-                <!-- </div> -->
-                <!-- <div class="clearfix cl">
-                    <label class="form-label col-2">内容摘要：</label>
-                    <div class="formControls col-10">
-                        <textarea name="" cols="" rows="" class="textarea" placeholder="说点什么...最少输入10个字符" datatype="*10-100"
-                            dragonfly="true" nullmsg="备注不能为空！" onKeyUp="textarealength(this,200)"></textarea>
-                        <p class="textarea-numberbar"><em class="textarea-length">0</em>/200</p>
-                    </div>
-                </div> -->
+                <div id="spu" class="clearfix cl">
+                    {foreach $sku as $v}
+                        <div class="Add_p_s">
+                            <label class="form-label col-2">商品属性：</label>
+                            <div class="formControls col-4">
+                                <input type="text" class="input-text" value="{$v['sku_path']}" name="attr_name[]">
+                            </div>
+                        </div>
+                        <div class="Add_p_s">
+                            <label class="form-label col-2">库存量：</label>
+                            <div class="formControls col-2">
+                                <input type="text" class="input-text" value="{$v['stock']}" name="stock[]">
+                            </div>
+                        </div>
+                        <div class="Add_p_s">
+                            <label class="form-label col-2">市场价格：</label>
+                            <div class="formControls col-2">
+                                <input type="text" class="input-text" value="{$v['price']}" name="price[]">
+                            </div>
+                        </div>
+                        <div class="Add_p_s" style="width:50px;">
+                            <input type="button" class="btn btn-warning" name="{$v['id']}" onclick="delete_sku(this)" value="删除sku"/>
+                        </div>
+                    {/foreach}
+                </div>
+                <input type="hidden" id="goodsAttrKey" name="goodsAttrKey" data-id="{$attr_key['id']}" value="{$attr_key['sku_name']}"/>
+                <input type="hidden" id="goodsAttrValue" name="goodsAttrValue" data-id="{$attrValue_id}" value="{$attrValue}"/>
+                <input type="hidden" id="attrLength" name="goodsAttrLength" value="{$length}"/>
 
+                <div class="clearfix cl">
+                    <label class="form-label col-2">商品图片：</label>
+                    <div class="formControls col-10">
+                        {foreach $image as $v}
+                            <img width="200" height="200" src="{$v['path']}" alt="">
+                            <input type="text" class="btn btn-warning" name="{$v['id']}" value="删除图片">
+                        {/foreach}
+                    </div>
+                </div>
                 <div class="clearfix cl">
                     <label class="form-label col-2">图片上传：</label>
                     <div class="formControls col-10">
@@ -161,16 +214,6 @@
                     </div>
                     <div><input type="hidden" name="image" id="image"></div>
                 </div>
-
-                <!-- <div class="clearfix cl">
-                    <label class="form-label col-2">允许评论：</label>
-                    <div class="formControls col-2 skin-minimal">
-                        <div class="check-box" style=" margin-top:9px">
-                            <input type="checkbox" id="checkbox-1">
-                            <label for="checkbox-1">&nbsp;</label>
-                        </div>
-                    </div>
-                </div> -->
                 <div class="clearfix cl" style="text-align:center;">
                     <div class="Button_operation">
                         <button class="btn btn-primary radius" id="btnsubmit" type="submit">
@@ -974,6 +1017,9 @@
     })(jQuery);
 </script>
 <script>
+    $(function(){
+        $('select[name=cat1_id]').trigger('change',$('select[name=cat1_id]').val());
+    });
     var attr_key = [];
     var attr_value = [];
     var count = 0;
@@ -1178,7 +1224,7 @@
                         <div class="formControls col-2">
                             <input type="text" class="input-text" value="" placeholder="" id="" name="price[]">
                         </div>
-                    </div><div class="Add_p_s" style="width:50px;"><input type="button" class="btn btn-warning" onclick="delete_sku(this)" value="删除sku" /></div>`;
+                    </div><div class="Add_p_s" style="width:50px;"><input type="button" class="btn btn-warning" onclick="delete_sku(this)" value="删除sku"/></div>`;
         $(html).appendTo($('#spu'));
     }
 
@@ -1203,6 +1249,8 @@
         $('#attrLength').val(length);
     });
     
+    var category1 = "{$category[1]}";
+    var category2 = "{$category[2]}";
     //  三级联动
     $('select[name=cat1_id]').change(function(){
         $('select[name=cat2_id]').empty();
@@ -1224,7 +1272,14 @@
             {
                 for(var i=0;i<data['data'].length;i++)
                 {
-                    html += '<option value="'+data['data'][i].id+'">'+data['data'][i].cate_name+'</option>';
+                    if(data['data'][i].id == category1)
+                    {
+                        html += '<option selected value="'+data['data'][i].id+'">'+data['data'][i].cate_name+'</option>';
+                    }
+                    else
+                    {
+                        html += '<option value="'+data['data'][i].id+'">'+data['data'][i].cate_name+'</option>';
+                    }
                 }
                 $('select[name=cat2_id]').append(html);
                 
@@ -1245,7 +1300,14 @@
             {
                 for(var i=0;i<data['data'].length;i++)
                 {
-                    html += '<option value="'+data['data'][i].id+'">'+data['data'][i].cate_name+'</option>';
+                    if(data['data'][i].id == category2)
+                    {
+                        html += '<option selected value="'+data['data'][i].id+'">'+data['data'][i].cate_name+'</option>';
+                    }
+                    else
+                    {
+                        html += '<option value="'+data['data'][i].id+'">'+data['data'][i].cate_name+'</option>';
+                    }
                 }
                 $('select[name=cat3_id]').append(html);
             }

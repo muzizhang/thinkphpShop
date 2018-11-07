@@ -23,14 +23,25 @@
 						<div class="shortcut">
 							<ul class="fl">
 								<li class="f-item">品优购欢迎您！</li>
-								<li class="f-item">请
-									<a href="/homeLogin/index" target="_blank">登录</a>　<span><a href="/homeRegister/index" target="_blank">免费注册</a></span></li>
+								{if(session('?home_id'))}
+									<li class="f-item">
+										<a href="/homeUser/SetInfo"><?=session('login_name')?></a>
+									</li>
+								{else /}
+									<li class="f-item">
+										请
+										<a href="/homeLogin/index" target="_blank">登录</a>　
+										<span>
+											<a href="/homeRegister/index" target="_blank">免费注册</a>
+										</span>
+									</li>
+								{/if}
 							</ul>
 							<ul class="fr">
-								<li class="f-item">我的订单</li>
+								<li class="f-item"><a href="/homeUser/index" target="_blank">我的订单</a></li>
 								<li class="f-item space"></li>
 								<li class="f-item">
-									<a href="home.html" target="_blank">我的品优购</a>
+									<a href="/homeIndex/index" target="_blank">我的品优购</a>
 								</li>
 								<li class="f-item space"></li>
 								<li class="f-item">品优购会员</li>
@@ -84,7 +95,6 @@
 											<i class="shopnum">0</i>
 										</a>
 										<div class="clearfix shopcarlist" id="shopcarlist" style="display:none">
-											<p>"啊哦，你的购物车还没有商品哦！"</p>
 											<p>"啊哦，你的购物车还没有商品哦！"</p>
 										</div>
 									</div>
@@ -334,7 +344,7 @@
 						<li class="yui3-u-1-5">
 							<div class="list-wrap">
 								<div class="p-img">
-									<a href="item.html" target="_blank"><img src="/static/img/_/mobile01.png" /></a>
+									<a href="/homeGood/list" target="_blank"><img src="/static/img/_/mobile01.png" /></a>
 								</div>
 								<div class="price">
 									<strong>
@@ -887,7 +897,11 @@
 							<div class="tbar-checkout">
 								<div class="jtc-number"> <strong class="J-count" id="cart-number">0</strong>件商品 </div>
 								<div class="jtc-sum"> 共计：<strong class="J-total" id="cart-sum">¥0</strong> </div>
-								<a class="jtc-btn J-btn" href="#none" target="_blank">去购物车结算</a>
+								{if(session('?home_id'))}
+									<a class="jtc-btn J-btn" href="/homeCart/index" target="_blank">去购物车结算</a>
+								{else /}
+									<a class="jtc-btn J-btn" href="#none" target="_blank">去购物车结算</a>
+								{/if}
 							</div>
 						</div>
 					</div>
