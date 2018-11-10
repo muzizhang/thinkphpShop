@@ -7,7 +7,6 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 	<title>产品详情页</title>
 	<link rel="icon" href="/static/assets/img/favicon.ico">
-
 	<link rel="stylesheet" type="text/css" href="/static/css/webbase.css" />
 	<link rel="stylesheet" type="text/css" href="/static/css/pages-item.css" />
 	<link rel="stylesheet" type="text/css" href="/static/css/pages-zoom.css" />
@@ -82,7 +81,6 @@
 									<li class="f-item">亿元优惠</li>
 									<li class="f-item">9.9元团购</li>
 									<li class="f-item">办公用品</li>
-
 								</ul>
 							</div>
 						</div>
@@ -95,7 +93,6 @@
 										<i class="shopnum">0</i>
 									</a>
 									<div class="clearfix shopcarlist" id="shopcarlist" style="display:none">
-										<p>"啊哦，你的购物车还没有商品哦！"</p>
 										<p>"啊哦，你的购物车还没有商品哦！"</p>
 									</div>
 								</div>
@@ -130,15 +127,11 @@
 		<div id="item">
 			<div class="crumb-wrap">
 				<ul class="sui-breadcrumb">
-					<li>
-						<a href="#">手机、数码、通讯</a>
-					</li>
-					<li>
-						<a href="#">手机</a>
-					</li>
-					<li>
-						<a href="#">Apple苹果</a>
-					</li>
+					{foreach $cateName as $v}
+						<li>
+							<a href="/homeIndex/search?goods={$v['id']}">{$v['cate_name']}</a>
+						</li>
+					{/foreach}
 					<li class="active">iphone 6S系类</li>
 				</ul>
 			</div>
@@ -149,7 +142,7 @@
 					<div class="zoom">
 						<!--默认第一个预览-->
 						<div id="preview" class="spec-preview">
-							<span class="jqzoom"><img jqimg="img/_/b1.png" src="/static/img/_/s1.png" /></span>
+							<span class="jqzoom"><img jqimg="{$image[0]['big_path']}" src="{$image[0]['md_path']}" /></span>
 						</div>
 						<!--下方的缩略图-->
 						<div class="spec-scroll">
@@ -157,15 +150,11 @@
 							<!--左右按钮-->
 							<div class="items">
 								<ul>
-									<li><img src="/static/img/_/s1.png" bimg="/static/img/_/b1.png" onmousemove="preview(this)" /></li>
-									<li><img src="/static/img/_/s2.png" bimg="/static/img/_/b2.png" onmousemove="preview(this)" /></li>
-									<li><img src="/static/img/_/s3.png" bimg="/static/img/_/b3.png" onmousemove="preview(this)" /></li>
-									<li><img src="/static/img/_/s1.png" bimg="/static/img/_/b1.png" onmousemove="preview(this)" /></li>
-									<li><img src="/static/img/_/s2.png" bimg="/static/img/_/b2.png" onmousemove="preview(this)" /></li>
-									<li><img src="/static/img/_/s3.png" bimg="/static/img/_/b3.png" onmousemove="preview(this)" /></li>
-									<li><img src="/static/img/_/s1.png" bimg="/static/img/_/b1.png" onmousemove="preview(this)" /></li>
-									<li><img src="/static/img/_/s2.png" bimg="/static/img/_/b2.png" onmousemove="preview(this)" /></li>
-									<li><img src="/static/img/_/s3.png" bimg="/static/img/_/b3.png" onmousemove="preview(this)" /></li>
+									{foreach $image as $k=>$v}
+										<li>
+											<img src="{$v['xs_path']}" bimg="{$v['md_path']}" onmousemove="preview(this)"  />
+										</li>
+									{/foreach}
 								</ul>
 							</div>
 							<a class="next">&gt;</a>
@@ -174,7 +163,7 @@
 				</div>
 				<div class="fr itemInfo-wrap">
 					<div class="sku-name">
-						<h4>Apple iPhone 6s（A1700）64G玫瑰金色 移动通信电信4G手机</h4>
+						<h4>{$goods['goods_name']}</h4>
 					</div>
 					<div class="news"><span>推荐选择下方[移动优惠购],手机套餐齐搞定,不用换号,每月还有花费返</span></div>
 					<div class="summary">
@@ -184,7 +173,7 @@
 							</div>
 							<div class="fl price">
 								<i>¥</i>
-								<em>5299.00</em>
+								<em>{$price['price']}</em>
 								<span>降价通知</span>
 							</div>
 							<div class="fr remark">
@@ -222,69 +211,31 @@
 					</div>
 					<div class="clearfix choose">
 						<div id="specification" class="summary-wrap clearfix">
-							<dl>
-								<dt>
-									<div class="fl title">
-										<i>选择颜色</i>
-									</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">金色<span title="点击取消选择">&nbsp;</span>
-									</a></dd>
-								<dd><a href="javascript:;">银色</a></dd>
-								<dd><a href="javascript:;">黑色</a></dd>
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-										<i>内存容量</i>
-									</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">16G<span title="点击取消选择">&nbsp;</span>
-									</a></dd>
-								<dd><a href="javascript:;">64G</a></dd>
-								<dd><a href="javascript:;" class="locked">128G</a></dd>
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-										<i>选择版本</i>
-									</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">公开版<span title="点击取消选择">&nbsp;</span>
-									</a></dd>
-								<dd><a href="javascript:;">移动版</a></dd>
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-										<i>购买方式</i>
-									</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">官方标配<span title="点击取消选择">&nbsp;</span>
-									</a></dd>
-								<dd><a href="javascript:;">移动优惠版</a></dd>
-								<dd><a href="javascript:;" class="locked">电信优惠版</a></dd>
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-										<i>套　　装</i>
-									</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">保护套装<span title="点击取消选择">&nbsp;</span>
-									</a></dd>
-								<dd><a href="javascript:;" class="locked">充电套装</a></dd>
-
-							</dl>
-
-
+							{foreach $attr as $k=>$v}
+								<dl>
+									<dt>
+										<div class="fl title" data-attr="{$v['id']}">
+											<i>{$v['sku_name']}</i>
+										</div>
+									</dt>
+									{foreach $value[$k] as $k1=>$v1}
+									<!--  class="locked"  如果库存为0，则下架不可选 -->
+									<dd>
+										<a href="javascript:;" {if($k1==0)} class="sku selected" {/if} class="sku" data-sku="{$v1['id']}">
+											{$v1['sku_value']}
+											<span title="点击取消选择">&nbsp;</span>
+										</a>
+									</dd>
+									{/foreach}
+								</dl>
+							{/foreach}
 						</div>
 
 						<div class="summary-wrap">
 							<div class="fl title">
 								<div class="control-group">
 									<div class="controls">
-										<input autocomplete="off" type="text" value="1" minnum="1" class="itxt" />
+										<input autocomplete="off" type="text" value="1" minnum="1" class="itxt"/>
 										<a href="javascript:void(0)" class="increment plus">+</a>
 										<a href="javascript:void(0)" class="increment mins">-</a>
 									</div>
@@ -293,7 +244,7 @@
 							<div class="fl">
 								<ul class="btn-choose unstyled">
 									<li>
-										<a href="/homeCart/index" class="sui-btn  btn-danger addshopcar">加入购物车</a>
+										<a href="javaScript:;" class="sui-btn btn-danger addshopcar">加入购物车</a>
 									</li>
 								</ul>
 							</div>
@@ -344,7 +295,7 @@
 											</strong>
 										</div>
 										<div class="operate">
-											<a href="javascript:void(0);" class="sui-btn btn-bordered">加入购物车</a>
+											<a href="/homeCart/SuccessCart" class="sui-btn btn-bordered">加入购物车</a>
 										</div>
 									</div>
 								</li>
@@ -363,7 +314,7 @@
 											</strong>
 										</div>
 										<div class="operate">
-											<a href="javascript:void(0);" class="sui-btn btn-bordered">加入购物车</a>
+											<a href="/homeCart/SuccessCart" class="sui-btn btn-bordered">加入购物车</a>
 										</div>
 									</div>
 								</li>
@@ -382,7 +333,7 @@
 											</strong>
 										</div>
 										<div class="operate">
-											<a href="javascript:void(0);" class="sui-btn btn-bordered">加入购物车</a>
+											<a href="/homeCart/SuccessCart" class="sui-btn btn-bordered">加入购物车</a>
 										</div>
 									</div>
 									<div class="list-wrap">
@@ -399,7 +350,7 @@
 											</strong>
 										</div>
 										<div class="operate">
-											<a href="javascript:void(0);" class="sui-btn btn-bordered">加入购物车</a>
+											<a href="/homeCart/SuccessCart" class="sui-btn btn-bordered">加入购物车</a>
 										</div>
 									</div>
 									<div class="list-wrap">
@@ -416,7 +367,7 @@
 											</strong>
 										</div>
 										<div class="operate">
-											<a href="javascript:void(0);" class="sui-btn btn-bordered">加入购物车</a>
+											<a href="/homeCart/SuccessCart" class="sui-btn btn-bordered">加入购物车</a>
 										</div>
 									</div>
 								</li>
@@ -936,23 +887,21 @@
 	</div>
 
 	<script type="text/template" id="tbar-cart-item-template">
-	<div class="tbar-cart-item" >
-		<div class="jtc-item-promo">
-			<em class="promo-tag promo-mz">满赠<i class="arrow"></i></em>
-			<div class="promo-text">已购满600元，您可领赠品</div>
-		</div>
-		<div class="jtc-item-goods">
-			<span class="p-img"><a href="#" target="_blank"><img src="{2}" alt="{1}" height="50" width="50" /></a></span>
-			<div class="p-name">
-				<a href="#">{1}</a>
+		<div class="tbar-cart-item" >
+			<div class="jtc-item-promo">
+				<em class="promo-tag promo-mz">满赠<i class="arrow"></i></em>
+				<div class="promo-text">已购满600元，您可领赠品</div>
 			</div>
-			<div class="p-price"><strong>¥{3}</strong>×{4} </div>
-			<a href="#none" class="p-del J-del">删除</a>
+			<div class="jtc-item-goods">
+				<span class="p-img"><a href="#" target="_blank"><img src="{2}" alt="{1}" height="50" width="50" /></a></span>
+				<div class="p-name">
+					<a href="#">{1}</a>
+				</div>
+				<div class="p-price"><strong>¥{3}</strong>×{4} </div>
+				<a href="#none" class="p-del J-del">删除</a>
+			</div>
 		</div>
-	</div>
-</script>
-
-
+	</script>
 
 	<script type="text/javascript" src="/static/js/plugins/jquery/jquery.min.js"></script>
 	<script type="text/javascript">
@@ -975,10 +924,98 @@
 	<script type="text/javascript" src="/static/js/plugins/sui/sui.min.js"></script>
 	<script type="text/javascript" src="/static/js/plugins/jquery.jqzoom/jquery.jqzoom.js"></script>
 	<script type="text/javascript" src="/static/js/plugins/jquery.jqzoom/zoom.js"></script>
-	<script type="text/javascript" src="/static/index/index.js"></script>
+	<script type="text/javascript" src="/static/js/pages/index.js"></script>
 
 
 	<!--页面底部  结束 -->
 </body>
 
 </html>
+<script>
+	var stock = "{$price['stock']}";
+	$('.itxt').blur(function(){
+		if(parseFloat($(this).val()) > parseFloat(stock))
+		{
+			$(this).val(parseFloat(stock));
+		}
+		$(this).attr("value",parseFloat($(this).val()));
+	});
+	
+	$('.mins').click(function(){
+		var num = $('.itxt').val();
+		if(parseFloat(num) >= 1)
+		{
+			if(parseFloat(num) == parseFloat(stock))
+			{
+				$('.itxt').parents('.summary-wrap').next().remove();
+			}
+			$('.itxt').val(parseFloat(num)-1)
+		}
+	});
+	$('.plus').click(function(){
+		var num = $('.itxt').val();
+		if(parseFloat(num) < parseFloat(stock))
+		{
+			$('.itxt').val(parseFloat(num)+1);
+		}
+		else
+		{
+			$("<div style='font-size:16px;font-weight:700;margin-top:15px;color:red;'>最多购买"+stock+"</div>").appendTo($('.itxt').parents('.choose'));
+			$(this).attr("disabled",true);
+			$(this).css("pointer-events","none");
+		}
+	});
+
+	//  点击
+	$('.sku').click(function(){
+		$(this).parents('dl').find('a').each(function(index,e){
+			if($(e).hasClass('selected'))
+			{
+				$(e).removeClass('selected');
+			}
+		});
+		$(this).addClass('selected');
+	});
+
+	//  加入购物车
+	var id = "{$goods['id']}";
+	//   /homeCart/SuccessCart
+	$('.btn-choose').find('a').click(function(){
+		var value = '';
+		//  判断哪个加有selected属性
+		$('#specification').find('a').each(function(index,e){
+			if($(e).hasClass('selected'))
+			{
+				value += $(e).attr('data-sku')+'|';
+			}
+		});
+		//   属性名
+		var attr = '';
+		$("#specification").find('div').each(function(){
+			attr += $(this).attr('data-attr')+'|';
+		});
+		value = (value.substring(0,value.length-1)).split('|');
+		attr = (attr.substring(0,attr.length-1)).split('|');
+		var sku = '';
+		$(value).each(function(index,e){
+			sku += attr[index]+':'+e+'|';
+		});
+		sku = sku.substring(0,sku.length-1);
+		//  取出数量
+		var count = $('.itxt').val();
+		$.ajax({
+			url:'/homeGood/Cart',
+			type:'post',
+			data:{
+				'sku':sku,
+				'count':count,
+				'id':id
+			},
+			dataType:'json',
+			success:function(data)
+			{
+				window.location.href = '/homeCart/SuccessCart?cartId='+data.cartId+'&pc='+count;
+			}
+		});
+	});
+</script>

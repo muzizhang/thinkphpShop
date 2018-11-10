@@ -21,7 +21,8 @@
         "flc/dysms": "^1.0",
         "swiftmailer/swiftmailer": "^6.1",
         "topthink/think-captcha": "^2.0",
-        "topthink/think-image": "^1.0"
+        "topthink/think-image": "^1.0",
+        "yansongda/pay": "^2.5"
     },
     "autoload": {
         "psr-4": {

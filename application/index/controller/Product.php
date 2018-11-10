@@ -141,12 +141,11 @@ class Product extends Base
             {
                 if(copy($oldFile.'/'.$v,$newFile.$v))
                 {
-                    // 82*82    142*142   220*282
                     //   打开图像文件进行操作
                     $image = \think\Image::open($newFile.$v);
-                    $image->thumb(82,82,\think\Image::THUMB_CENTER)->save($newFile.'sm_'.$v);
-                    $image->thumb(142,142,\think\Image::THUMB_CENTER)->save($newFile.'md_'.$v);
-                    $image->thumb(220,282,\think\Image::THUMB_CENTER)->save($newFile.'big_'.$v);
+                    $image->thumb(56,56,\think\Image::THUMB_CENTER)->save($newFile.'sm_'.$v);
+                    $image->thumb(400,400,\think\Image::THUMB_CENTER)->save($newFile.'md_'.$v);
+                    $image->thumb(800,800,\think\Image::THUMB_CENTER)->save($newFile.'big_'.$v);
                     unlink($oldFile.'/'.$v);
                     \Db::table('goods_image')
                         ->data([
@@ -182,7 +181,7 @@ class Product extends Base
     //  编辑商品
     public function getEdit()
     {
-        echo '<pre>';
+        // echo '<pre>';
         //  根据id，取出对应商品的信息
         $data = \Db::table('goods')->where('id',$_GET['id'])->find();
         // var_dump($data);
@@ -230,10 +229,10 @@ class Product extends Base
             $sku_attrValue[$k][] = explode(',',$v['sku_value']);
             $sku_attrValue[$k][] = explode(',',$v['value_id']);
         }
-        echo "sku_attrkey<br>";
-        var_dump($sku_attrkey);
-        echo "sku_attrValue<br>";
-        var_dump($sku_attrValue);
+        // echo "sku_attrkey<br>";
+        // var_dump($sku_attrkey);
+        // echo "sku_attrValue<br>";
+        // var_dump($sku_attrValue);
         //  拼接全局变量
         foreach($attr_value as $v)
         {
@@ -259,23 +258,23 @@ class Product extends Base
                 $sku_path[$k][] = explode(':',$v1);
             }
         }
-        echo "sku_path<br>";
-        var_dump($sku_path);
-        foreach($sku_path as $k=>$v)
-        {
-            foreach($v as $k1=>$v1)
-            {
-                foreach($sku_attrValue[$k1][1] as $k2=>$v2)
-                {
-                    if($v1[$k1] == $sku_attrkey[$k1][1] && $v1[1] == $v2)
-                    {
-                        $path[] = $sku_attrkey[$k1][0].":".$sku_attrValue[$k1][0][$k2];
-                    }
-                }
-            }
-        }
-        echo "path<br>";
-        var_dump($path);
+        // echo "sku_path<br>";
+        // var_dump($sku_path);
+        // foreach($sku_path as $k=>$v)
+        // {
+        //     foreach($v as $k1=>$v1)
+        //     {
+        //         foreach($sku_attrValue[$k1][1] as $k2=>$v2)
+        //         {
+        //             if($v1[$k1] == $sku_attrkey[$k1][1] && $v1[1] == $v2)
+        //             {
+        //                 $path[] = $sku_attrkey[$k1][0].":".$sku_attrValue[$k1][0][$k2];
+        //             }
+        //         }
+        //     }
+        // }
+        // echo "path<br>";
+        // var_dump($path);
         //  取出一级分类
         $cat1_id = \Db::table('category')->where('parent_id',0)->select();
         //  取出品牌

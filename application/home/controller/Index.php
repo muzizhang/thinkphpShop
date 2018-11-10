@@ -48,6 +48,34 @@ class Index
     //   搜索
     public function getSearch()
     {
-        return view('search');
+        //   商品分类
+        $category = \Db::table('category')
+                        ->where('parent_id',$_GET['goods'])
+                        ->select();
+        //   根据分类，取出分类下对应的商品
+        $sql = "select * from goods where locate('-".$_GET['goods']."-',category_id)>0";
+        $goods = \Db::query($sql);
+        //  取出商品图片
+        foreach($goods as $v)
+        {
+            $image[] = \Db::table('goods_spu')
+                        ->alias('gspu')
+                        ->join('goods_image gimage','gspu.spu_id = gimage.spu_id')
+                        ->where('gspu.goods_id',$v['id'])
+                        ->field('gimage.path')
+                        ->find();
+            $price[] = \Db::table('goods_spu')
+                            ->alias('gspu')
+                            ->join('goods_sku gsku','gspu.spu_id = gsku.spu_id')
+                            ->where('gspu.goods_id',$v['id'])
+                            ->field('gsku.price')
+                            ->find();
+        }
+        return view('search',[
+            'category'=>$category,
+            'goods'=>$goods,
+            'image'=>$image,
+            'price'=>$price,
+        ]);
     }
 }

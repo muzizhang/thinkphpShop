@@ -28,14 +28,61 @@
 
 `订单中心`
 字段
-    订单id，订单状态[未支付，已支付，已取消，待发货，已发货，未评价，退款中，已退款，订单成功]，sku_id，商品名称，商品信息，商品数量，订单编号，收货人，交易时间，快递公司，快递单号，地址，手机号码，付款方式，spu
+    订单id，订单状态[未支付，已支付，已取消，待发货，已发货，未评价，退款中，已退款，订单成功]，订单金额，sku_id，用户id，商品名称，商品数量，订单编号，收货人，交易时间，快递公司，快递单号，地址，手机号码，付款方式，spu
+
+drop table if exists orders;
+create table orders
+(
+    id int unsigned not null auto_increment comment 'ID',
+    order_status int unsigned not null default 0 comment '订单状态[0:未支付,1:已支付,2:已取消,3:待发货,4:已发货,5:未评价,6:退款中,7:已退款,8:订单成功]',
+    spu_id int unsigned not null comment 'spu_id',
+    sku_id int unsigned not null comment 'sku_id',
+    attr_value VARCHAR(255) not null comment '规格{属性属性值}',
+    goods_name VARCHAR(255) not null comment '商品名称',
+    goods_count int unsigned not null comment '商品数量',
+    order_price decimal(10,2) not null comment '订单金额',
+    order_id VARCHAR(255) not null comment '订单编号',
+    consignee VARCHAR(255) not null comment '收货人',
+    trading_time datetime comment '交易时间',
+    courier_company VARCHAR(255) comment '快递公司',
+    courier_id VARCHAR(255) comment '快递单号',
+    address VARCHAR(255) not null comment '地址',
+    phone VARCHAR(255) not null comment '手机号',
+    payment_type int unsigned default 0 not null comment '支付方式[0:支付宝支付,1:微信支付,2:货到付款]',
+    user_id int unsigned not null comment '用户ID',
+    created_at datetime default current_timestamp not null comment '创建时间',
+    primary key (id),
+    key spu_id(spu_id),
+    key order_id(order_id),
+    key courier_id(courier_id)
+)engine="InnoDB" comment="订单中心";
+
 `退款记录表`
 字段
     id，订单id，订单编号，收款人，退款方，退款金额，退款时间，退款方式
     
 `购物车`
 字段
-    id，商品名称，商品信息，单价，数量，商品编号，市场价，购买价，sku_id，用户id，spu，属性
+    id，商品名称，单价，数量，商品编号(id)，购买价，sku_id，用户id，spu，属性，商品图片
+
+drop table if exists cart;
+create table cart
+(
+    id int unsigned not null auto_increment comment 'ID',
+    goods_name VARCHAR(255) not null comment '商品名称',
+    price decimal(10,2) not null comment '单价',
+    count int unsigned not null comment '数量',
+    goods_id VARCHAR(255) not null comment '商品编号',
+    purchase_price DECIMAL(10,2) not null comment '购买价',
+    sku_id int unsigned not null comment 'sku_id',
+    user_id int unsigned not null comment '用户id',
+    spu_id int unsigned not null comment 'spu',
+    attr_value VARCHAR(255) not null comment '属性',
+    goods_image VARCHAR(255) not null comment '商品图片',
+    created_at DATETIME DEFAULT current_timestamp not null comment '创建时间',
+    primary key (id)
+)engine="InnoDB" comment="购物车";
+
 `收藏表`
 字段
     id，用户ID，sku_id，商品信息，商品名称，

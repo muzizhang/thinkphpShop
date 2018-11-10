@@ -37,12 +37,13 @@ Route::controller('homeGood','home/Good');
 Route::controller('homeSeckill','home/Seckill');
 Route::controller('homeUser','home/User');
 
+Route::controller('homePay','home/PayController');
 //  测试
 //  资源路由
 // Route::resource('test','home/test');
-Route::rule('test/read','index/test/read');
-Route::rule('test/redis','index/test/redis');
-Route::rule('test/ip','index/test/ip');
+// Route::rule('test/read','index/test/read');
+// Route::rule('test/redis','index/test/redis');
+// Route::rule('test/ip','index/test/ip');
 return [
 
 ];

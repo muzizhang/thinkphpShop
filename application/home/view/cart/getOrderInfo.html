@@ -80,29 +80,39 @@
 						<ul class="addr-detail">
 							<li class="addr-item">
 							
-							  <div>
-								<div class="con name selected"><a href="javascript:;" >张默<span title="点击取消选择">&nbsp;</a></div>
-								<div class="con address">张默 北京市海淀区三环内 中关村软件园9号楼 <span>159****3201</span>
-									<span class="base">默认地址</span>
-									<span class="edittext"><a data-toggle="modal" data-target=".edit" data-keyboard="false" >编辑</a>&nbsp;&nbsp;<a href="javascript:;">删除</a></span>
+								<div class="father" data-id='1'>
+									<div class="con name selected">
+										<a href="javascript:;">
+											张默
+											<span title="点击取消选择">&nbsp;</span>
+										</a>
+									</div>
+									<div class="con address">
+										<span>张默 北京市海淀区三环内 中关村软件园9号楼 </span>
+										<span>159****3201</span>
+										<span class="base">默认地址</span>
+										<span class="edittext">
+											<a data-toggle="modal" data-target=".edit" data-keyboard="false" >编辑</a>&nbsp;&nbsp;
+											<a href="javascript:;">删除</a>
+										</span>
+									</div>
+									<div class="clearfix"></div>
 								</div>
-								<div class="clearfix"></div>
-							  </div>
-							  <div>
+							  <div class="father" data-id="2">
 								<div class="con name"><a href="javascript:;">李煜<span title="点击取消选择">&nbsp;</a></div>
-								<div class="con address">李煜 北京市海淀区三环内 中关村软件园8号楼 <span>187****4201</span>
+								<div class="con address"><span>李煜 北京市海淀区三环内 中关村软件园8号楼 </span><span>187****4201</span>
 								<span class="edittext"><a data-toggle="modal" data-target=".edit" data-keyboard="false" >编辑</a>&nbsp;&nbsp;<a href="javascript:;">删除</a></span>
 								</div>
 								<div class="clearfix"></div>
 							  </div>
 							  
-							  <div>
+							  <!-- <div>
 								<div class="con name"><a href="javascript:;">王希<span title="点击取消选择">&nbsp;</a></div>
 								<div class="con address">王希 北京市海淀区三环内 中关村软件园6号楼  <span>156****5681</span>
 								<span class="edittext"><a data-toggle="modal" data-target=".edit" data-keyboard="false" >编辑</a>&nbsp;&nbsp;<a href="javascript:;">删除</a></span>
 								</div>
 								<div class="clearfix"></div>
-							  </div>
+							  </div> -->
 							</li>
 							
 							
@@ -176,8 +186,12 @@
 					</div>
 					<div class="step-cont">
 						<ul class="payType">
-							<li class="selected">微信付款<span title="点击取消选择"></span></li>
-							<li>货到付款<span title="点击取消选择"></span></li>
+							<li class="selected">支付宝付款
+								<span title="点击取消选择"></span>
+							</li>
+							<li>货到付款
+								<span title="点击取消选择"></span>
+							</li>
 						</ul>
 					</div>
 					<div class="hr"></div>
@@ -186,32 +200,30 @@
 					</div>
 					<div class="step-cont">
 						<ul class="send-detail">
-							<li>
-								
-								<div class="sendGoods">
-									
-									<ul class="yui3-g">
-										<li class="yui3-u-1-6">
-											<span><img src="/static/img/goods.png"/></span>
-										</li>
-										<li class="yui3-u-7-12">
-											<div class="desc">Apple iPhone 6s (A1700) 64G 玫瑰金色 移动联通电信4G手机硅胶透明防摔软壳 本色系列</div>
-											<div class="seven">7天无理由退货</div>
-										</li>
-										<li class="yui3-u-1-12">
-											<div class="price">￥5399.00</div>
-										</li>
-										<li class="yui3-u-1-12">
-											<div class="num">X1</div>
-										</li>
-										<li class="yui3-u-1-12">
-											<div class="exit">有货</div>
-										</li>
-									</ul>
-								</div>
-							</li>
-							<li></li>
-							<li></li>
+							{foreach $data as $k=>$v}
+								<li>
+									<div class="sendGoods">
+										<ul class="yui3-g">
+											<li class="yui3-u-1-6">
+												<span><img src="{$v->goods_image}"/></span>
+											</li>
+											<li class="yui3-u-7-12">
+												<div class="desc">{$v->goods_name}<br></div>
+												<div class="seven">7天无理由退货</div>
+											</li>
+											<li class="yui3-u-1-12">
+												<div class="price">￥{$v->price}</div>
+											</li>
+											<li class="yui3-u-1-12">
+												<div class="num">X{$v->count}</div>
+											</li>
+											<li class="yui3-u-1-12">
+												<div class="exit">有货</div>
+											</li>
+										</ul>
+									</div>
+								</li>
+							{/foreach}
 						</ul>
 					</div>
 					<div class="hr"></div>
@@ -236,25 +248,25 @@
 		<div class="order-summary">
 			<div class="static fr">
 				<div class="list">
-					<span><i class="number">1</i>件商品，总商品金额</span>
-					<em class="allprice">¥5399.00</em>
+					<span><i class="number">{$num}</i>件商品，总商品金额</span>
+					<em class="allprice">¥{$sum}</em>
 				</div>
-				<div class="list">
+				<!-- <div class="list">
 					<span>返现：</span>
 					<em class="money">0.00</em>
 				</div>
 				<div class="list">
 					<span>运费：</span>
 					<em class="transport">0.00</em>
-				</div>
+				</div> -->
 			</div>
 		</div>
 		<div class="clearfix trade">
-			<div class="fc-price">应付金额:　<span class="price">¥5399.00</span></div>
+			<div class="fc-price">应付金额:　<span class="price">¥{$sum}</span></div>
 			<div class="fc-receiverInfo">寄送至:北京市海淀区三环内 中关村软件园9号楼 收货人：某某某 159****3201</div>
 		</div>
 		<div class="submit">
-			<a class="sui-btn btn-danger btn-xlarge" href="/homeCart/pay">提交订单</a>
+			<a class="sui-btn btn-danger btn-xlarge" id="submitOrder" href="javaScript:;">提交订单</a>
 		</div>
 	</div>
 	<!-- 底部栏位 -->
@@ -394,8 +406,43 @@
 <script type="text/javascript" src="/static/js/plugins/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="/static/js/plugins/jquery.easing/jquery.easing.min.js"></script>
 <script type="text/javascript" src="/static/js/plugins/sui/sui.min.js"></script>
-<script type="text/javascript" src="/static/components/ui-modules/nav/nav-portal-top.js"></script>
+<script type="text/javascript" src="/static/js/widget/nav-portal-top.js"></script>
 <script type="text/javascript" src="/static/js/pages/getOrderInfo.js"></script>
 </body>
 
 </html>
+<script>
+	//  提交订单  /homeCart/pay
+	$('#submitOrder').click(function(){
+		var consignee,address,phone,payType = '';
+		$('.addr-item .name').each(function(index){
+			if($(this).hasClass('selected'))
+			{
+				consignee = trim($(this).find('a').text());
+				address = trim($(this).next().children(':first').text());
+				phone = trim($(this).next().children(':nth-child(2)').text());
+			}
+		});
+		//  获取支付方式
+		$('.payType li').each(function(){
+			if($(this).hasClass('selected'))
+			{
+				payType = trim($(this).text());
+			}
+		});
+		$.ajax({
+			url:"/homeCart/Order",
+			type:'POST',
+			data:{
+				'consignee':consignee,
+				'address':address,
+				'phone':phone,
+				'payType':payType
+			},
+			dataType:"json",
+			success:function(data){
+				location.href = '/homePay/index?id='+data.order+'&sum='+data.count;
+			}
+		});
+	});
+</script>
