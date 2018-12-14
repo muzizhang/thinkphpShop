@@ -8,6 +8,35 @@ use app\index\model\RoleAdmin;
 
 class Manage extends Base
 {
+    //  判断权限
+    //  根据管理员id，获取出权限路径  $admin
+
+    public function getUrlPath($admin_id)
+    {
+        $sql = "SELECT p.url FROM
+            role_admin ra 
+            LEFT JOIN privilege_role pr ON ra.role_id = pr.role_id
+            LEFT JOIN privilege p ON pr.pri_id = p.id
+            WHERE ra.admin_id = ? AND p.url != ''";
+        $data = \Db::query($sql,[$admin_id]);
+
+        //  将二维数组转换为一维数组
+        $arr = [];
+        foreach($data as $k=>$v)
+        {
+            //  判断数组中的值一个还是多个
+            if(strpos($v['url'],',') !== false)
+            {
+                $array = explode(',',$v['url']);
+                //  合并数组
+                $arr = array_merge($arr,$array);
+            }
+            else
+                $arr[] = $v['url'];
+        }
+        return json_encode($arr);
+    }
+
     //  权限列表
     public function getPri()
     {

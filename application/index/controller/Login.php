@@ -6,6 +6,7 @@ use app\index\model\User;
 
 class Login extends Base
 {
+    //  登录页
     public function index()
     {
         return view('index');
@@ -28,6 +29,8 @@ class Login extends Base
         {
             session('name',$_POST['name']);
             session('id',$user->id);
+            $manage = new \app\index\controller\Manage();
+            session('url_path',$manage->getUrlPath(session('id')));
             //  写入用户登录信息表
             echo json_encode([
                 'status'=>'200'
@@ -46,5 +49,13 @@ class Login extends Base
     {
         $captcha = new Captcha();
         return $captcha->entry();
+    }
+
+    //  退出登录
+    public function loginOut()
+    {
+        // 清空session 
+        Session::clear();
+        $this->redirect('/');
     }
 }
