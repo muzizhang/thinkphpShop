@@ -3,12 +3,12 @@ namespace app\index\controller;
 
 class Index extends Base
 {
-    public function getIndex()
+    public function index()
     {
         return view('index');
     }
 
-    public function getHome()
+    public function home()
     {
         return view('home');
     }

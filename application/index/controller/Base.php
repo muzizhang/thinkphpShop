@@ -7,7 +7,7 @@ class Base extends Controller
 {
     public function __construct()
     {
-        $arr = ['index/index,login/index,login/Login,login/Verify'];
+        $arr = ['/index,/,login/Login,login/Verify'];
         //  判断全局变量中$_SERVER['REQUEST_URI']  是否在某一个固定的数组中
         if(!in_array($_SERVER['REQUEST_URI'],$arr))
         {

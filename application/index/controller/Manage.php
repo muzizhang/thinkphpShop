@@ -326,8 +326,6 @@ class Manage extends Base
                     ->leftJoin('role r','ra.role_id = r.id')
                     ->order('id','desc')
                     ->select();
-        // echo '<pre>';
-        // var_dump($admin);
         return view('manage/info',[
             'user'=>$user,
             'admin'=>$admin

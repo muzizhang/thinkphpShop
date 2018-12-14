@@ -31,12 +31,15 @@
       <div class="admin_modify_style" id="Personal">
         <div class="type_title">管理员信息 </div>
         <div class="xinxi">
-          <div class="form-group"><label class="col-sm-3 control-label no-padding-right" for="form-field-1">用户名：
+          <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">
+              用户名：
             </label>
-            <div class="col-sm-9"><input type="text" name="name" value="{$user['name']}" class="col-xs-7 text_info"
-                disabled="disabled">
-              &nbsp;&nbsp;&nbsp;<a href="javascript:ovid()" onclick="change_Password()" class="btn btn-warning btn-xs">修改密码</a></div>
-
+            <div class="col-sm-9">
+              <input type="text" name="name" value="{$user['name']}" class="col-xs-7 text_info" disabled="disabled">
+              &nbsp;&nbsp;&nbsp;
+              <a href="javascript:ovid()" onclick="change_Password()" class="btn btn-warning btn-xs">修改密码</a>
+            </div>
           </div>
           <!-- <div class="form-group"><label class="col-sm-3 control-label no-padding-right" for="form-field-1">性别： </label>
             <div class="col-sm-9">
@@ -167,7 +170,7 @@
     if (num > 0) { return false; }
     else {
       var arr = {};
-      $(".xinxi input[type$='text']").each(function (n){
+      $(".xinxi input[type$='text']").each(function (n) {
         var name = $(this).attr('name');
         arr[name] = $(this).val();
       });
@@ -176,17 +179,15 @@
       layer.alert('修改成功！', {
         title: '提示框',
         icon: 1,
-      },function(index){
+      }, function (index) {
         $.ajax({
-          url:'/manage/Info',
-          type:'post',
+          url: '/manage/Info',
+          type: 'post',
           traditional: true,
-          data:{data:arr},
-          dataType:'json',
-          success:function(data)
-          {
-            if(data.status == 200)
-            {
+          data: { data: arr },
+          dataType: 'json',
+          success: function (data) {
+            if (data.status == 200) {
               $('#Personal').find('.xinxi').removeClass("hover");
               $('#Personal').find('.text_info').removeClass("add").attr("disabled", true);
               $('#Personal').find('.btn-success').css({ 'display': 'none' });
@@ -254,27 +255,24 @@
           var password = $('#password').val();
           var newPassword = $('#Nes_pas').val();
           $.ajax({
-            url:'/manage/EditPassword',
-            type:'post',
-            data:{OldPassword:password,NewPassword:newPassword},
-            dataType:'json',
-            success:function(data)
-            { 
-              if(data.status == 404)
-              {
+            url: '/manage/EditPassword',
+            type: 'post',
+            data: { OldPassword: password, NewPassword: newPassword },
+            dataType: 'json',
+            success: function (data) {
+              if (data.status == 404) {
                 layer.alert('原密码输入错误！', {
                   title: '提示框',
                   icon: 1,
                 });
               }
-              else
-              {
-                layer.alert('修改成功！',{
-                  title:'提示框',
-                  icon:1,
+              else {
+                layer.alert('修改成功！', {
+                  title: '提示框',
+                  icon: 1,
                 });
                 layer.close(index);
-              }  
+              }
             }
           });
         }

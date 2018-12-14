@@ -131,6 +131,7 @@ class Product extends Base
         //  根据隐藏域传递的路径取出文件
         $oldFile = Env::get('root_path').'public'.$_POST['image'];
         $newFile = Env::get('root_path').'public/static/upload/goods/'.date('Ymd').'/';
+        var_dump($oldFile);
         if(!is_dir(Env::get('root_path').'public/static/upload/goods/'.date('Ymd')))
         {
             mkdir(Env::get('root_path').'public/static/upload/goods/'.date('Ymd'),0777,true);
