@@ -15,6 +15,7 @@
 Route::rule('/','index/Login/index');
 Route::rule('login/Login$','index/Login/Login')->middleware('InLoginCheck');
 Route::rule('login/Verify','index/Login/Verify');
+Route::rule('login/logout','index/Login/logout');
 
 
 

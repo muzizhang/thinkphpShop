@@ -27,10 +27,17 @@ class Login extends Base
                         ->find();
         if($user)
         {
+            if($user->id == 1)
+            {
+                session('url_path','*');
+            }
+            else
+            {
+                $manage = new \app\index\controller\Manage();
+                session('url_path',$manage->getUrlPath(session('id')));
+            }
             session('name',$_POST['name']);
             session('id',$user->id);
-            $manage = new \app\index\controller\Manage();
-            session('url_path',$manage->getUrlPath(session('id')));
             //  写入用户登录信息表
             echo json_encode([
                 'status'=>'200'
@@ -52,10 +59,10 @@ class Login extends Base
     }
 
     //  退出登录
-    public function loginOut()
+    public function logout()
     {
         // 清空session 
-        Session::clear();
+        session(null);
         $this->redirect('/');
     }
 }

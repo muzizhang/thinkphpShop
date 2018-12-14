@@ -18,10 +18,13 @@ class LoginCheck
             // 设置一个白名单
             $whiteList = ['index','home'];
             $url_path = json_decode(session('url_path'));
-            // 判断是否有权访问
-            if(!in_array($path, array_merge($whiteList, $url_path)))
+            if($url_path !== null)
             {
-                die('无权访问！');
+                // 判断是否有权访问
+                if(!in_array($path, array_merge($whiteList, $url_path)))
+                {
+                    die('无权访问！');
+                }
             }
         }
         return $next($request);
